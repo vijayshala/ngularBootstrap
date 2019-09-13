@@ -1,0 +1,207 @@
+<form #fundFilterForm="ngForm">
+    <!-- Filter for Fund Family Contact -->
+    <div class="row mx-0 h-100" *ngIf="selectedTabView === 'contact'">
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Data Source</div>
+            <select class="form-control" name="DataSource"
+                [(ngModel)]="filterData.fundFamilyContactFilterData.DataSource">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.dataSourceList" [value]="item.Value">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Deparments</div>
+            <select class="form-control" name="Deparments"
+                [(ngModel)]="filterData.fundFamilyContactFilterData.Deparments">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.departmentList" [value]="item.Value">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">State</div>
+            <select class="form-control" name="StateId" [(ngModel)]="filterData.fundFamilyContactFilterData.StateId">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.stateList" [value]="item.Value">{{item.DisplayText}}</option>
+            </select>
+        </div>
+        <div class="col-12 p-3">
+            <div class="font-weight-bold xxs-text mb-2">Location</div>
+            <select class="form-control" name="Location" [(ngModel)]="filterData.fundFamilyContactFilterData.Location">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.locationList" [value]="item.Value">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Filter for source fund   *ngIf="selectedTabView === 'contacts'"-->
+    <div class="row mx-0 h-100" *ngIf="selectedTabView === 'sourceFunds'">
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Dollar Fund</div>
+            <select class="form-control" name="IsDollarFund"
+                [(ngModel)]="filterData.sourcedFundFilterData.IsDollarFund">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.booleanList" [value]="item.Value == '1'">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">NAV Used</div>
+            <select class="form-control" name="IsNavUsed" [(ngModel)]="filterData.sourcedFundFilterData.IsNavUsed">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.booleanList" [value]="item.Value == '1'">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Divident Frequency</div>
+            <select class="form-control" name="DividendFrequencyGUID"
+                [(ngModel)]="filterData.sourcedFundFilterData.DividendFrequencyGUID">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.dividendFrequencyList" [value]="item.Value">
+                    {{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 p-3">
+            <div class="font-weight-bold xxs-text mb-2">Share Class</div>
+            <select class="form-control" name="ShareClassGUID"
+                [(ngModel)]="filterData.sourcedFundFilterData.ShareClassGUID">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.shareClassList" [value]="item.Value">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 p-3">
+            <div class="font-weight-bold xxs-text mb-2">Call Date Omnibus Type</div>
+            <select class="form-control" name="OmnibusTypeGUID"
+                [(ngModel)]="filterData.sourcedFundFilterData.OmnibusTypeGUID">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.omnibusTypeList" [value]="item.Value">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Corporate Actions</div>
+            <select class="form-control" name="HasCorporateAction" [(ngModel)]="filterData.sourcedFundFilterData.HasCorporateAction">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.booleanList" [value]="item.Value == '1'">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Pending Fund Filter -->
+    <div class="row mx-0 h-100" *ngIf="selectedTabView === 'pendingFunds'">
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Dollar Fund</div>
+            <select class="form-control" name="IsDollarFund"
+                [(ngModel)]="filterData.pendingFundFilterData.IsDollarFund">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.booleanList" [value]="item.Value == '1'">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">MIL Rate</div>
+            <select class="form-control" name="IsMilRateUsed"
+                [(ngModel)]="filterData.pendingFundFilterData.IsMilRateUsed">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.booleanList" [value]="item.Value == '1'">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">NAV User</div>
+            <select class="form-control" name="IsNavUsed" [(ngModel)]="filterData.pendingFundFilterData.IsNavUsed">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.booleanList" [value]="item.Value == '1'">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Is Fund Trading</div>
+            <select class="form-control" name="IsFundTrading"
+                [(ngModel)]="filterData.pendingFundFilterData.IsFundTrading">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.booleanList" [value]="item.Value == '1'">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Trading Start Date</div>
+            <p-calendar name="TradingStartDate" [(ngModel)]="filterData.pendingFundFilterData.TradingStartDate"
+                styleClass="w-100" inputStyleClass="w-100" required dateFormat="mm/dd/yy" readonlyInput="true">
+            </p-calendar>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Pricing Source</div>
+            <select class="form-control" name="PricingSourceId"
+                [(ngModel)]="filterData.pendingFundFilterData.PricingSourceId">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.pricingSourceList" [value]="item.Value">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Divident Frequency</div>
+            <select class="form-control" name="DividendFrequencyGUID"
+                [(ngModel)]="filterData.pendingFundFilterData.DividendFrequencyGUID">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.dividendFrequencyList" [value]="item.Value">
+                    {{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+        <div class="col-12 p-3">
+            <div class="font-weight-bold xxs-text mb-2">Status</div>
+            <select class="form-control" name="StatusId" [(ngModel)]="filterData.pendingFundFilterData.StatusId">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.statusList" [value]="item.Value">{{item.DisplayText}}</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Junk fund Filter -->
+    <div class="row mx-0 h-100" *ngIf="selectedTabView === 'junkFunds'">
+        <div class="col-12 border-bottom p-3">
+            <div class="font-weight-bold xxs-text mb-2">Reason</div>
+            <select class="form-control" name="ReasonId" [(ngModel)]="filterData.junkFundFilterData.ReasonId">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.reasonList" [value]="item.Value">{{item.DisplayText}}</option>
+            </select>
+        </div>
+
+        <div class="col-12  p-3">
+            <div class="font-weight-bold xxs-text mb-2">Merged Fund Family</div>
+            <select class="form-control" name="MergedFundFamilyGUID"
+                [(ngModel)]="filterData.junkFundFilterData.MergedFundFamilyGUID">
+                <option value="">-- Select --</option>
+                <option *ngFor="let item of dropdownList.mergedFndFamilyList" [value]="item.Value">{{item.DisplayText}}
+                </option>
+            </select>
+        </div>
+    </div>
+
+    <div class="position-absolute bottom-0 w-100">
+        <button class="btn secondary-bg secondary-border text-white w-50 text-uppercase filter-btn-shape-l"
+            (click)="this.fundFilterForm.reset()">Clear</button>
+        <button class="btn primary-bg primary-border text-white w-50 text-uppercase filter-btn-shape-r"
+            (click)="onApplyFilterBtnClick()">Apply</button>
+    </div>
+</form>

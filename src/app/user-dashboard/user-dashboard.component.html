@@ -1,0 +1,132 @@
+<div class="row">
+  <div id="wrapper" class="w-100" [ngClass]="{'sm-open': sideMenuState, 'sm-close': !sideMenuState}">
+    <!-- Navigation -->
+    <nav class="navbar sticky-top bg-white shadow-sm" role="navigation">
+      <!-- Brand and toggle get grouped for better mobile display -->
+
+      <!-- Top Menu Items -->
+      <!-- <span (click)="toggleSideBar()"><img height="40px" src="assets/images/menu-icon.png" /></span> -->
+      <a href="javascript:void(0)">
+        <!-- <span class="primary-text">Q</span>UODD -->
+        <img class="xxxl-w" src="assets/images/header-logo.png" alt="">
+      </a>
+      <div class="dropdown">
+        <a class="dropdown-toggle cursor-pointer" data-toggle="dropdown">
+          <img class="xxs-w h-auto" src="assets/images/userIcon.png" />
+          <span class="pl-2 text-muted">{{user.UserName}}</span>
+        </a>
+        <div class="dropdown-menu left-auto right-0 mt-2">
+          <!-- <a class="dropdown-item d-flex align-items-center cursor-pointer text-muted px-2"
+            (click)="showToast({ msg:'this is a big messagae to test and save information'})"><i
+              class="material-icons pr-1">add</i> Testing Toast</a> -->
+          <a class="dropdown-item d-flex align-items-center cursor-pointer text-muted px-2" (click)="logoutUser()"><i
+              class="material-icons pr-1">power_settings_new</i> Log Out</a>
+        </div>
+      </div>
+    </nav>
+
+    <!--Page container view  -->
+    <div class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+</div>
+<!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens collapse navbar-collapse navbar-ex1-collapse-->
+<div id="sidenav" class="sidebar position-fixed secondary-bg overflow-x-hidden h-100 left-0 top-0 xs-w z-2"
+  [ngClass]="{'sm-open': sideMenuState, 'sm-close': !sideMenuState}">
+
+  <div class="text-right pr-3" (click)="toggleSideBar()">
+    <!-- <img class="bg-light mt-2" height="40px" src="assets/images/menu-icon.png" /> -->
+    <a class="d-block py-2 text-white" href="javascript:void(0)">
+      <!-- <i class="material-icons py-2">menu</i> -->
+      <img src="assets/images/icons/icon_menu_expand.png">
+    </a>
+  </div>
+
+  <ul class="nav navbar-nav">
+    <li class="position-relative" *ngFor="let mitem of menuList" routerLinkActive="active-menu ">
+      <!-- side-nav  routerLinkActive="activetab"-->
+      <span [hidden]="seletedMenuItem !== mitem" class="position-absolute primary-bg h-100 pl-1"></span>
+      <a class="d-flex align-items-center text-decoration-none text-white xxs-h pl-4" [routerLink]="mitem.path"
+        (click)="onMenuSelect(mitem)">
+        <!-- <i class="material-icons">{{mitem.icon}}</i> -->
+        <img src="assets/images/icons/{{mitem.icon}}">
+        <span class="pl-2" [hidden]="!sideMenuState">{{mitem.name}}</span>
+      </a>
+    </li>
+
+  </ul>
+</div>
+
+<div class="modal overflow-auto" *ngIf="alertPopup.show" [ngClass]="{'show modal-active': alertPopup.show}">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-2 text-center">
+            <div class="muted-bg rounded-circle xs-hw" *ngIf="alertPopup.type == 'add'">
+              <i class="material-icons text-white xxxl-text pt-2 mt-1">stop</i></div>
+            
+            <div class="success-bg rounded-circle xs-hw" *ngIf="alertPopup.type == 'source'">
+                <i class="material-icons text-white xxxl-text pt-2 mt-1">stop</i></div>
+            
+            <div class="danger-bg rounded-circle xs-hw" *ngIf="alertPopup.type == 'delete' || alertPopup.type == 'delete-list'">
+            <i class="material-icons text-white xxl-text pt-3">delete</i></div>
+
+            <div class="muted-bg rounded-circle xs-hw" *ngIf="alertPopup.type == 'link'">
+            <i class="material-icons text-white xxl-text pt-3">link</i></div>
+
+            <div class="danger-bg rounded-circle xs-hw" *ngIf="alertPopup.type == 'unlink'">
+            <img src="assets/images/icons/icon_unlink_w.png" class="pt-3"></div>
+
+            <div class="primary-bg rounded-circle xs-hw" *ngIf="alertPopup.type == 'update'">
+              <i class="material-icons text-white xxl-text pt-3">priority_high</i></div>
+            
+            <div class="primary-bg rounded-circle xs-hw" *ngIf="alertPopup.type == 'move'">
+              <i class="material-icons text-white xxl-text pt-3">delete</i></div>
+
+            <div class="primary-bg rounded-circle xs-hw" *ngIf="alertPopup.type == 'upload'">
+              <i class="material-icons text-white xxl-text pt-3">delete</i>
+            </div>
+          </div>
+          <div class="col-10">
+            <div class=" mb-2">
+              <h5 class="font-weight-bold secondary-text d-inline modal-title  text-capitalize">{{alertPopup.header}}?</h5>
+              <button type="button" class="close xs-text" (click)="closePopup()"> <i class="fa fa-close"></i> </button>
+            </div>
+            <p class="text-muted">{{alertPopup.message}}</p>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer border-0">
+        <!-- <label class="xxs-text">Fields marked with <span class="text-danger">*</span> are mandatory</label> -->
+        <button class="btn danger-text text-uppercase  font-weight-bold" (click)="closePopup()">Cancel</button>
+        <button *ngIf="alertPopup.type == 'add'" class="btn success-text text-uppercase font-weight-bold"
+          (click)="addFn()">Add</button>
+        <button *ngIf="alertPopup.type == 'delete-list'" class="btn success-text text-uppercase font-weight-bold"
+          (click)="deleteListFn()">Remove</button>
+          <button *ngIf="alertPopup.type == 'delete'" class="btn success-text text-uppercase font-weight-bold"
+          (click)="deleteFn()">Remove</button>
+        <button *ngIf="alertPopup.type == 'link'" class="btn success-text text-uppercase font-weight-bold"
+          (click)="linkfn()">Link</button>
+        <button *ngIf="alertPopup.type == 'unlink-list'" class="btn success-text text-uppercase font-weight-bold"
+          (click)="unLinkListFn()">unlink</button>
+        <button *ngIf="alertPopup.type == 'unlink'" class="btn success-text text-uppercase font-weight-bold"
+          (click)="unLinkFn()">unlink</button>
+        <button *ngIf="alertPopup.type == 'update'" class="btn success-text text-uppercase font-weight-bold"
+          (click)="updateRecordFn()">Save</button>
+
+        <button *ngIf="alertPopup.type == 'move'" class="btn success-text text-uppercase font-weight-bold"
+        (click)="moveRecordFn()">Yes</button>
+
+        <button *ngIf="alertPopup.type == 'source'" class="btn success-text text-uppercase font-weight-bold"
+        (click)="moveRecordFn()">Yes</button>
+
+        <button *ngIf="alertPopup.type == 'upload'" class="btn success-text text-uppercase font-weight-bold"
+          (click)="uploadPermissionFn()">Upload</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<p-toast position="bottom-right" [style]="{marginBottom: '10px'}" styleClass="custom-toast"></p-toast>

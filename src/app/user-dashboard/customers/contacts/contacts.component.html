@@ -1,0 +1,293 @@
+<div *ngIf="!loadingInfo">
+  <div class="d-flex p-2">
+    <div class="position-relative py-1">
+      <form #searchField="ngForm">
+        <input type="text" name="search" [(ngModel)]="searchText" class="form-control form-control-sm border-0 rounded-0 pr-4 xxxxl-w"
+        placeholder="Search" maxlength="15">
+      <!-- <i class="material-icons position-absolute top-0 right-0 text-muted pt-2 pr-1"
+        (click)="searchContacts(true)">search</i> -->
+        <button class="btn border-0 px-1 material-icons position-absolute top-0 right-0 text-muted pt-2 cursor-pointer" 
+          (click)="searchContacts(true)">search
+        </button>
+      </form>
+     
+    </div>
+    <div class="ml-auto pt-1 secondary-text">
+      <span class="mx-2">
+        <button class="btn mt-n2 p-0" (click)="deleteContacts()" *ngIf="contactDataArray.length"
+          [disabled]="selectedContacts.length == 0">
+          <i
+            [ngClass]="[selectedContacts.length ? 'material-icons cursor-pointer' : 'material-icons cursor-pointer silver-text']">delete</i>
+        </button>
+      </span>
+      <!-- <span class="mx-2" *ngIf="contactDataArray.length" (click)="downloadCustomerContactsInFile()">
+        <img class="mt-n3 cursor-pointer" width="19px" src="assets/images/icons/icon_download.png">
+      </span> -->
+      <span class="mx-2"><i class="material-icons font-weight-bold cursor-pointer"
+          (click)="populateContactInformation('add', '')">add</i>
+      </span>
+      <span class="mx-2">
+        <img class="mt-n3 cursor-pointer" width="19px" src="assets/images/icons/icon_filter.png"
+          (click)="toggleFilterSidebar()">
+      </span>
+    </div>
+  </div>
+
+  <div class="" *ngIf="contactDataArray.length && !alertMsg.show">
+    <!-- [globalFilterFields]="['bank_name','account_number','account_type','bank_branch']"  [columns]="col"-->
+    <p-table class="dataListTable" [value]="contactDataArray" [paginator]="true" [rows]="10" sortMode="multiple"
+      [responsive]="true" [(selection)]="selectedContacts">
+      <ng-template pTemplate="header" let-columns>
+        <tr>
+          <th class="xxs-w light-bg border-0 text-center px-2">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <!-- <th lass="light-bg border-0 font-weight-normal" *ngFor="let col of columns" [pSortableColumn]="col.data">
+              <span class="d-flex">{{col.header}}  <p-sortIcon [field]="col.data" ></p-sortIcon></span> <!-- <i class="material-icons pl-2">sort</i>--
+          </th> -->
+
+          <th class="light-bg border-0 font-weight-normal">
+            <span class="d-flex">Contacts  
+              <i class="material-icons pl-2" (click)="sortTableData('First_Name')">sort</i>
+            </span>
+          </th>
+          <th class="light-bg border-0 font-weight-normal">Email Address</th>
+          <th class="light-bg border-0 font-weight-normal">Address</th>
+          <th class="light-bg border-0 font-weight-normal">
+            <span class="d-flex">State <i class="material-icons pl-2" (click)="sortTableData('State')">sort</i></span>
+          </th>
+          <th class="light-bg border-0 font-weight-normal">
+            <span class="d-flex">Zipcode <i class="material-icons pl-2">sort</i></span>
+          </th>
+          <th class="light-bg border-0 font-weight-normal">Primary Phone</th>
+          <th class="light-bg border-0 font-weight-normal">Data Source</th>
+          <th class="light-bg border-0 font-weight-normal">Department</th>
+          <th class="xs-w light-bg border-0 text-center">
+            <i class="material-icons cursor-pointer">more_vert</i>
+          </th> 
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-singleRow let-contact>
+        <tr>
+          <td class="text-center px-2">
+            <p-tableCheckbox [value]="singleRow"></p-tableCheckbox>
+          </td>
+          <!-- <td class="text-break" *ngFor="let col of columns">
+            {{singleRow[col.data] }}
+          </td> -->
+          <td class="text-break text-elips">{{contact.ContactName ? contact.ContactName : '--'}}</td>
+          <td class="text-break text-elips">{{contact.EmailAddress ? contact.EmailAddress : '--'}}</td>
+          <td class="text-break text-elips">{{contact.AddressLine1 ? contact.AddressLine1 : '--'}}</td>
+          <td class="text-break">{{contact.State.Name ? contact.State.Name : '--'}}</td>
+          <td class="text-break">{{contact.ZipCode ? contact.ZipCode : '--'}}</td>
+          <td class="text-break">{{contact.PrimaryPhoneNumber ? contact.PrimaryPhoneNumber : '--'}}</td>
+          <td class="text-break">{{contact.DataSource.Name ? contact.DataSource.Name : '--'}}</td>
+          <td class="text-break">{{contact.Department.Name ? contact.Department.Name : '--'}}</td>
+          <td class="text-center">
+            <span>
+              <i class="material-icons cursor-pointer secondary-text"
+                (click)="populateContactInformation('edit', contact)">edit</i>
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="row" *ngIf="!contactDataArray.length && alertMsg.show">
+    <div class="col-12 mt-5 pt-5">
+      <h4 class="non-fund-box text-muted text-center w-100">{{alertMsg.msg}}</h4>
+    </div>
+  </div>
+
+</div>
+
+<app-loading-icon [loader]="loadingInfo"></app-loading-icon>
+
+<div class="modal overflow-auto" id="addContact" *ngIf="custPopups.contactPP" [ngClass]="{'show modal-active': custPopups.contactPP}">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content light-bg border-0">
+
+      <!-- Modal Header -->
+      <div class="modal-header pb-0 border-0">
+        <h5 class="modal-title  white-text" *ngIf="custPopups.type === 'add'">Add New Contact</h5>
+        <h5 class="modal-title  white-text" *ngIf="custPopups.type === 'edit'">{{contactForm.value.name}}</h5>
+        <button type="button" class="btn px-0" (click)="popupClose('c')">
+          <i class="material-icons xs-text font-weight-bold">close</i>
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body ">
+        <form [formGroup]="contactForm">
+          <!-- #addContact="ngForm" -->
+          <div class="row mb-2">
+            <!-- part 1 left side -->
+            <div class="col-6 ">
+              <div class="bg-white rounded px-3 py-2">
+
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">Type of Contact <span class="text-danger">*</span>
+                      </label>
+                      <select class="form-control" name="data-source" formControlName="typofcontact" required>
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let tcItem of dropdownList.typeOfContact" [value]="tcItem.Value">
+                          {{tcItem.DisplayText}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">Position <span class="text-danger">*</span> </label>
+                      <!-- <input class="form-control" type="text" placeholder="eg.ABC Company" name="data-department" formControlName="dataDept" /> -->
+                      <select class="form-control" name="position" formControlName="contactPosition" required>
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let pitem of dropdownList.positionList" [value]="pitem.Value">
+                          {{pitem.DisplayText}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row form-group">
+                  <div class="col-2 pr-0">
+                    <label class="font-weight-bold xxs-text">Title <span class="text-danger">*</span> </label>
+                    <input class="form-control px-1" type="text" placeholder="eg. MR" formControlName="title"
+                      name="name-title" maxlength="10" required />
+                  </div>
+                  <div class="col-10">
+                    <label class="font-weight-bold xxs-text">Contact Name <span class="text-danger">*</span> </label>
+                    <span class="text-muted xxs-text"> (50 Characters max)</span>
+                    <input class="form-control" type="text" placeholder="eg.ABC Company" formControlName="name"
+                      name="customer-name" maxlength="50" (keypress)="checkForAlpaNumeric($event)" required />
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">Data Source <span class="text-danger">*</span> </label>
+                      <select class="form-control" name="data-source" formControlName="dataSource" required>
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.dataSourceList" [value]="item.Value">
+                          {{item.DisplayText}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">Department <span class="text-danger">*</span> </label>
+                      <select class="form-control" name="department" formControlName="dataDept" required>
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.departmentList" [value]="item.Value">
+                          {{item.DisplayText}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text" required>Primary Phone Number <span
+                      class="text-danger">*</span> </label>
+                  <input class="form-control" type="text" placeholder="eg. 99999999" name="phone" maxlength="12"
+                    formControlName="phoneno" minlength="7" />
+                  <span class="text-danger xxs-text"
+                    *ngIf="contactForm.controls['phoneno'].invalid && contactForm.controls['phoneno'].dirty">Please
+                    provide valid phone number</span>
+                </div>
+
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text">Email <span class="text-danger">*</span> </label>
+                  <input class="form-control" type="text" placeholder="eg. abc@quod.com" name="email"
+                    formControlName="email" required />
+                  <span class="text-danger xxs-text"
+                    *ngIf="contactForm.controls['email'].invalid && contactForm.controls['email'].dirty">
+                    Please provide valid email address</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- part 2 right side -->
+            <div class="col-6 ">
+              <div class="bg-white rounded px-3 py-2">
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text">Address </label> <span class="text-muted xxs-text"> (Each
+                    line hold maximum 255 Characters max)</span>
+                  <input class="form-control" type="text" placeholder="Line 1" name="address-line1" maxlength="255"
+                    formControlName="address1" />
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="text" placeholder="Line 2" name="address-line2" maxlength="255"
+                    formControlName="address2" />
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="text" placeholder="Line 3" name="address-line3" maxlength="255"
+                    formControlName="address3" />
+                </div>
+
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">State </label>
+                      <select class="form-control" name="state" formControlName="state"
+                        (change)="onStateSelection($event)">
+                        <option value="">--Select--</option>
+                        <option *ngFor="let state of dropdownList.stateList" [value]="state.Id">{{state.DisplayText}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">City </label>
+                      <span *ngIf="waitForCityList" class="fa fa-circle-o-notch fa-spin ng-star-inserted px-2"></span>
+                      <select class="form-control" name="city" formControlName="city">
+                        <option value="">--Select--</option>
+                        <option *ngFor="let city of dropdownList.cityList" [value]="city.Id">{{city.DisplayText}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">Zipcode </label>
+                      <input class="form-control" type="text" placeholder="eg. 411258" name="zipcode"
+                        formControlName="pincode" maxlength="10" />
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="row w-100 mx-0 px-3 pb-3">
+        <div class="flex-fill pt-1">
+          <label class="xxs-text text-muted"><span class="text-danger">*</span> Fields marked with <span
+              class="text-danger">*</span> are mandatory</label>
+        </div>
+        <div class="flex-fill">
+          <button type="button" class="btn btn-sm primary-bg text-white float-right xl-w text-uppercase"
+            *ngIf="custPopups.type === 'add'" [disabled]="contactForm.invalid || loadingInfo"
+            (click)="addNewContact()">Add</button>
+
+          <button type="button" class="btn btn-sm primary-bg text-uppercase text-white float-right xl-w"
+            *ngIf="custPopups.type === 'edit'" [disabled]="contactForm.invalid  || loadingInfo"
+            (click)="editContactInfo()">Save</button>
+
+          <button type="button" class="btn btn-sm danger-bg text-uppercase text-white float-right xl-w mr-3"
+            *ngIf="custPopups.type === 'edit'" (click)="deleteContactInfo()">Delete</button>
+
+          <button type="button" class="btn btn-sm secondary-bg text-white float-right xl-w mr-3 text-uppercase"
+            (click)="resetContactInformation(custPopups.type)">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

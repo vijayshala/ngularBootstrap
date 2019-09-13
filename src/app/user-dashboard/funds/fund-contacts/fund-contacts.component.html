@@ -1,0 +1,361 @@
+<div id="fund-contact">
+  <div class="d-flex p-2">
+    <div class="position-relative py-1">
+      <form>
+          <input type="text" class="form-control form-control-sm border-0 rounded-0 pr-4 xxxxl-w" placeholder="Search" maxlength="15"/>
+          <!-- <i class="material-icons position-absolute top-0 right-0 text-muted pt-2 pr-1">search</i> -->
+          <button class="btn border-0 px-1 material-icons position-absolute top-0 right-0 text-muted pt-2 cursor-pointer" 
+          >search</button>
+      </form>     
+      <!-- <span class="mx-2"><i class="fa fa-plus "  (click)="openPopup()" ></i></span> -->
+    </div>
+    <div class=" ml-auto pt-1 secondary-text">
+      <span class="mx-2"><i class="material-icons cursor-pointer" *ngIf="selectMultiContacts.length"
+          (click)="selectAllFundFamilyContactToDelete()">delete</i></span>
+      <span class="mx-2"><img class="mt-n3 cursor-pointer" width="19px"
+          src="assets/images/icons/icon_download.png"></span>
+      <span class="mx-2"><i class="material-icons font-weight-bold cursor-pointer"
+          (click)="openContactInfo('add', '')">add</i></span>
+      <span class="mx-2"><img class="mt-n3 cursor-pointer" width="19px" src="assets/images/icons/icon_filter.png"
+          (click)="toggleFilterSidebar()"></span>
+    </div>
+  </div>
+
+  <div class="" *ngIf="contactDataArray.length && !alertMsg.show">
+      <p-table class="dataListTable" [value]="contactDataArray" [paginator]="true" [rows]="10" #dt sortMode="multiple"
+        [responsive]="true" [(selection)]="selectMultiContacts">
+        <ng-template pTemplate="header">
+          <tr>
+            <th class="xxs-w light-bg border-0 text-center px-2">
+              <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+            </th>
+            <th class="light-bg border-0 font-weight-normal">
+              <span class="d-flex">Contacts <i class="material-icons pl-2">sort</i></span>
+            </th>
+            <th class="light-bg border-0 font-weight-normal">Email Address</th>
+            <th class="light-bg border-0 font-weight-normal">Address</th>
+            <th class="light-bg border-0 font-weight-normal">State</th>
+            <th class="light-bg border-0 font-weight-normal">Zip Code</th>
+            <th class="light-bg border-0 font-weight-normal">Primary Phone</th>
+            <th class="light-bg border-0 font-weight-normal">Data Source</th>
+            <th class="light-bg border-0 font-weight-normal">Department</th>
+            <th class="light-bg border-0 font-weight-normal">Location</th>
+            <th class="light-bg border-0 font-weight-normal">Days</th>
+            <th class="light-bg border-0 font-weight-normal">Hours</th>
+            <th class="xs-w light-bg border-0 text-center">
+              <!-- <i class="material-icons cursor-pointer">more_vert</i> -->
+            </th>
+          </tr>
+        </ng-template>
+        <ng-template pTemplate="body" let-singleRow let-contact>
+          <tr>
+            <td class="text-center px-2">
+              <p-tableCheckbox [value]="singleRow"></p-tableCheckbox>
+              <!-- <p-checkbox name="selectcontact"  binary="true" [(ngModel)]="contact.checked"></p-checkbox>  [(ngModel)]="contact.checked" -->
+            </td>
+            <td class="text-break">{{contact.Name ? contact.Name : '--'}}</td>
+            <td class="text-break">{{contact.PrimaryEmailAddress ? contact.PrimaryEmailAddress : '--'}}</td>
+            <td class="text-break">{{contact.AddressLine1 ? contact.AddressLine1 : '--'}}</td>
+            <td class="text-break">{{contact.StateName ? contact.StateName : '--'}}</td>
+            <td class="text-break">{{contact.ZipCode ? contact.ZipCode : '--'}}</td>
+            <td class="text-break">{{contact.PrimaryPhoneNumber ? contact.PrimaryPhoneNumber : '--'}}</td>
+            <td class="text-break">{{contact.DataSourceName ? contact.DataSourceName : '--'}}</td>
+            <td class="text-break">{{contact.DepartmentName ? contact.DepartmentName : '--'}}</td>
+            <td class="text-break">{{contact.Location ? contact.Location : '--'}}</td>
+            <td class="text-break">{{contact.Days ? contact.Days : '--'}}</td>
+            <td class="text-break">{{contact.HoursToShow ? contact.HoursToShow : '--'}}</td>
+            <td class="text-center">
+              <span [ngClass]="{'d-none': selectMultiContacts.length}"> 
+                <i class="material-icons cursor-pointer secondary-text"  (click)="openContactInfo('edit', contact)">edit</i> 
+              </span>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </div>
+  
+    <div class="row" *ngIf="!contactDataArray.length && alertMsg.show">
+      <div class="col-12 mt-5 pt-5">
+          <h4 class="non-fund-box text-muted text-center w-100">{{alertMsg.msg}}</h4>
+      </div>
+    </div>
+  
+  </div>
+  
+  <app-loading-icon  [loader]="loadingInfo" ></app-loading-icon>
+
+
+<!-- Add New Fund Family Modal -->
+<div class="modal overflow-auto" id="addContact" *ngIf="ffcPopups.ffcPP "
+  [ngClass]="{'show modal-active': ffcPopups.ffcPP }">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content border-0 light-bg">
+
+      <!-- Modal Header -->
+      <div class="modal-header pb-0 border-0">
+        <h5 class="modal-title white-text " *ngIf="ffcPopups.type === 'add'">Add New Fund Family Contact</h5>
+        <h5 class="modal-title white-text " *ngIf="ffcPopups.type === 'edit'">{{contactForm.value.Name}}</h5>
+        <button type="button" class="btn px-0" (click)="popupClose()">
+          <i class="material-icons xs-text font-weight-bold">close</i>
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form #FundFamilyContactForm="ngForm">
+          <div class="row">
+            <div class="col-6">
+
+              <div class="bg-white rounded px-3 py-2">
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text">Contact Name<span class="text-danger font-w-6">*</span>
+                  </label> <span class="text-muted xxs-text"> (80 Characters max)</span>
+                  <input class="form-control" type="text" placeholder="eg.ABC Company" name="Name"
+                    [(ngModel)]="newFundFamilyContactObj.Name" required maxlength="80" />
+                </div>
+
+                <div class="row border-bottom mb-3">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">Data Source<span class="text-danger font-w-6">*</span>
+                      </label>
+                      <select class="form-control" name="DataSourceId" [(ngModel)]="newFundFamilyContactObj.DataSourceId">
+                        <option value="">-- Select --</option>
+                        <option  *ngFor="let item of dropdownList.dataSourceList" [value]="item.Value">{{item.DisplayText}}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">Departmemt<span
+                          class="text-danger font-w-6">*</span></label>
+                      <select class="form-control" name="DepartmentId" [(ngModel)]="newFundFamilyContactObj.DepartmentId">
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.departmentList" [value]="item.Value">{{item.DisplayText}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text">Address </label> <span class="text-muted xxs-text"> (Each
+                    address line 255 Characters max)</span>
+                  <input class="form-control" type="text" placeholder="Line 1" name="AddressLine1" maxlength="255"
+                    [(ngModel)]="newFundFamilyContactObj.AddressLine1" />
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="text" placeholder="Line 2" name="AddressLine2" maxlength="255"
+                    [(ngModel)]="newFundFamilyContactObj.AddressLine2" />
+                </div>
+                <div class="form-group">
+                  <input class="form-control" type="text" placeholder="Line 2" name="AddressLine3" maxlength="255"
+                    [(ngModel)]="newFundFamilyContactObj.AddressLine3" />
+                </div>
+                <!-- <div class="form-group">
+                      <input class="form-control" type="text" placeholder="Line 3" name="address-line3"  maxlength="255" [(ngModel)]="newFundFamilyContactObj.address3" />
+                    </div> -->
+
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">State </label>
+                      <select class="form-control" name="StateId" [(ngModel)]="newFundFamilyContactObj.StateId" (change)="onStateSelection($event)">
+                        <option value="">--Select--</option>
+                        <option *ngFor="let state of dropdownList.stateList" [value]="state.Id">{{state.DisplayText}} </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">City </label>
+                      <span *ngIf="waitForCityList" class="fa fa-circle-o-notch fa-spin ng-star-inserted px-2"></span>
+                      <select class="form-control" name="CityId" [(ngModel)]="newFundFamilyContactObj.CityId">
+                        <option value="">--Select--</option> 
+                        <option *ngFor="let city of dropdownList.cityList" [value]="city.DisplayText">{{city.DisplayText}} </option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-weight-bold xxs-text">Zipcode </label>
+                      <input class="form-control" type="text" placeholder="eg. 10001" name="ZipCode"
+                        [(ngModel)]="newFundFamilyContactObj.ZipCode" maxlength="10" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+            <div class="col-6 pl-0">
+              <div class="bg-white rounded px-3 py-2">
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text">Location <span class="text-danger font-w-6">*</span> </label>
+                  <select class="form-control" name="Location" [(ngModel)]="newFundFamilyContactObj.Location">
+                    <option value="">-- Select --</option>
+                    <option  *ngFor="let item of dropdownList.locationList" [value]="item.Value">{{item.DisplayText}}</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text">Days <span class="text-danger font-w-6">*</span></label>
+                  <div>
+                    <p-selectButton [options]="dropdownList.weekDayList" name="Days" [(ngModel)]="newFundFamilyContactObj.Days" multiple="multiple">
+                    </p-selectButton>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12"><label class="font-weight-bold xxs-text">Hour Start <span
+                        class="text-danger font-w-6">*</span></label></div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <select class="form-control" name="hourstart" [(ngModel)]="newFundFamilyContactObj.startHours">
+                        <option value="">--Select--</option>
+                        <option value="03">3</option>
+                        <option value="06">6</option>
+                        <option value="09">9</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <select class="form-control" name="hourstart" [(ngModel)]="newFundFamilyContactObj.startHours">
+                        <option value="">--Select--</option>
+                        <option value="03">3</option>
+                        <option value="06">6</option>
+                        <option value="09">9</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <select class="form-control">
+                        <option value="">--Select--</option>
+                        <option>AM</option>
+                        <option>PM</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-12"><label class="font-weight-bold xxs-text">Hour Ends <span
+                        class="text-danger font-w-6">*</span></label></div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <select class="form-control" name="Start" [(ngModel)]="newFundFamilyContactObj.Hours.Start">
+                        <option value="">--Select--</option>
+                        <option value="03">3</option>
+                        <option value="06">6</option>
+                        <option value="09">9</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-4">
+                    <div class="form-group">
+                      <select class="form-control" name="End" [(ngModel)]="newFundFamilyContactObj.Hours.End">
+                        <option value="">--Select--</option>
+                        <option value="03">3</option>
+                        <option value="06">6</option>
+                        <option value="09">9</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="col-4">
+                    <div class="form-group">
+                      <select class="form-control">
+                        <option value="">--Select--</option>
+                        <option>AM</option>
+                        <option>PM</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+
+              <div class="bg-white rounded px-3 pt-1 mt-2">
+                <label class="font-weight-bold xxs-text info-text">Contact</label>
+
+                <div class="row form-group">
+                  <div class="col-10">
+                    <div class="row">
+                      <div class="col-4">
+                        <label class="font-weight-bold xxs-text">Number Type <span
+                            class="text-danger font-w-6">*</span></label>
+                        <div>
+                          <select class="form-control">
+                            <option value="">-- Select --</option>
+                            <option  *ngFor="let item of dropdownList.phoneNumberTypeList" [value]="item.Value">{{item.DisplayText}}</option>
+                          </select>
+                        </div>
+                      </div>
+                      <div class="col-4 px-0">
+                        <label class="font-weight-bold xxs-text">Phone Number <span
+                            class="text-danger font-w-6">*</span></label>
+                        <div>
+                          <input type="text" class="form-control">
+                        </div>
+                      </div>
+                      <div class="col-4">
+                        <label class="font-weight-bold xxs-text">Extension <span
+                            class="text-danger font-w-6">*</span></label>
+                        <div>
+                          <input type="text" class="form-control">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="col-2 pl-0 pt-3 mt-3">
+                    <button class="btn btn-sm light-bg mr-1 p-1" type="button"><i
+                        class="material-icons">add</i></button>
+                    <button class="btn btn-sm light-bg p-1" type="button"><i class="material-icons">remove</i></button>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-12"><label class="font-weight-bold xxs-text">Email Address <span
+                        class="text-danger font-w-6">*</span></label></div>
+                  <div class="col-10 form-group">
+                    <input type="email" class="form-control" name="email">
+                  </div>
+                  <div class="col-2 pl-0">
+                    <button class="btn btn-sm light-bg mr-1 p-1" type="button"><i
+                        class="material-icons">add</i></button>
+                    <button class="btn btn-sm light-bg p-1" type="button"><i class="material-icons">remove</i></button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+      <!-- Modal footer -->
+      <div class="row w-100 mx-0 px-3 py-3">
+        <div class="flex-fill pt-1">
+          <label class="xxs-text text-muted"><span class="text-danger">*</span> Fields marked with <span
+              class="text-danger">*</span> are mandatory</label>
+        </div>
+        <div class="flex-fill">
+          <button type="button" class="btn btn-sm primary-bg text-uppercase text-white float-right xl-w"
+            *ngIf="ffcPopups.type === 'edit'" [disabled]="FundFamilyContactForm.invalid || loadingInfo"
+            (click)="PerformAction('Update')">Save</button>
+          <button type="button" class="btn btn-sm danger-bg text-uppercase text-white float-right xl-w mr-3"
+            *ngIf="ffcPopups.type === 'edit'" (click)="PerformAction('Delete')">Delete</button>
+
+          <button type="button" class="btn btn-sm primary-bg text-white float-right text-uppercase xl-w"
+            *ngIf="ffcPopups.type === 'add'" [disabled]="FundFamilyContactForm.invalid || loadingInfo"
+            (click)="PerformAction('Add')">Add</button>
+          <button type="button"
+            class="btn btn-sm secondary-bg text-white float-right xl-w mr-3 text-uppercase" (click)="this.FundFamilyContactForm.reset()">Reset</button>
+
+          <!-- Loading icons -->
+          <span *ngIf="loadingInfo" class="fa fa-circle-o-notch fa-spin float-right mt-3 px-4"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

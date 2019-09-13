@@ -1,0 +1,48 @@
+<!--- Base Route --->
+<div class="container-fluid h-100">
+    <div *ngIf="loader | async" class="align-items-center d-flex flex-column h-100 justify-content-center position-fixed w-100 z-index-99999 light-trans-bg">
+        <div class="lds-ring d-inline-block position-relative sm-hw">
+            <div class="d-block sm-hw position-absolute m-1 rounded-circle"></div>
+            <div class="d-block sm-hw position-absolute m-1 rounded-circle"></div>
+            <div class="d-block sm-hw position-absolute m-1 rounded-circle"></div>
+        </div>
+    </div>
+<router-outlet></router-outlet>
+    
+</div>
+<!-- <div style="height: 100%; background: #fafafafa">
+    <div class="container" > <!-- -flude--
+        <div class="row">
+            <div class="header font-weight-bold mt-3 font-25" style="letter-spacing: 4px;"> <span class="text-success">Q</span>UODD</div>
+        </div>
+       
+        <div class="item-center login-card mt-5">
+            <div class="row justify-content-center">
+                <div class="col-4">
+                    <h3 class="text-justify"></h3>
+                    <p class="text-justify font-12 color-A3A3A3">
+                        Please Provide username and password to sign-in Quodd VMS
+                    </p>
+    
+                    <form>
+                        <div class="form-group mt-5" >
+                            <div id="username" class="mb-3" >
+                                <label> Username</label>
+                                <input type="text" name="username" class="form-control" maxlength="30" />
+                            </div>
+    
+                            <div id="password" class="mb-3" >
+                                <label> Password </label>
+                                <input type="password" name="password" class="form-control" minlength="6" maxlength="20" />
+                            </div>
+                        </div>
+                        <div class="mt-5 text-center">
+                            <button class="btn btn-danger" type="submit">Login</button>
+                        </div>
+                    </form>
+                </div>
+            </div>               
+        </div>
+
+    </div>
+</div> -->

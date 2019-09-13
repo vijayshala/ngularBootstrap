@@ -1,0 +1,188 @@
+<div *ngIf="!loadingInfo">
+  <div class="d-flex p-2">
+    <div class="position-relative py-1">
+      <form>
+          <input type="text" name="searchtxt" [(ngModel)]="searchText"  placeholder="Search"
+            class="form-control form-control-sm border-0 rounded-0 pr-4 xxxxl-w"  maxlength="15" />
+          <button class="btn border-0 px-1 material-icons position-absolute top-0 right-0 text-muted pt-2 cursor-pointer" 
+          (click)="searchFunds(true)">search</button>
+      </form>
+    </div>
+    <div class="ml-auto pt-1 secondary-text">
+      <span class="mx-2">
+        <!--<i class="material-icons cursor-pointer danger-text"  (click)="linkSeletedFunds()">link_off</i>-->
+        <!-- <i class="fa fa-unlink danger-text" ></i> -->
+        <button class="btn mt-n2 p-0" (click)="unLinkSelectedFundsConfirmation()"
+          [disabled]="selectedFunds.length == 0">
+          <img [ngClass]="[selectedFunds.length ? 'mt-n2' : 'mt-n2 fade-text']"
+            src="assets/images/icons/icon_unlink.png">
+        </button>
+        <!-- <i class="material-icons">link</i>   -->
+        <!-- <i class="material-icons danger-text">link_off</i> -->
+      </span>
+      <!-- <span class="mx-2"><img class="mt-n3 cursor-pointer" width="19px"
+          src="assets/images/icons/icon_download.png"></span> -->
+      <span class="mx-2"><i class="material-icons font-weight-bold cursor-pointer"
+          (click)="populateFundDetails('new', '')">add</i></span>
+      <span class="mx-2"><img class="mt-n3 cursor-pointer" width="19px" src="assets/images/icons/icon_filter.png"
+          (click)="toggleFilter()"></span>
+    </div>
+  </div>
+  <div class="" *ngIf="sourceFundList && sourceFundList.length && !alertMsg.show">
+    <!-- [globalFilterFields]="['bank_name','account_number','account_type','bank_branch']" 
+        [lazy]="true" (onLazyLoad)="loadTableDataLazy($event)" 
+      [totalRecords]="fundParamObj.totalRecords"
+    -->
+    <p-table class="dataListTable" [value]="sourceFundList" [rows]="10" #lsft sortMode="multiple"
+      [responsive]="true" [(selection)]="selectedFunds" [paginator]="true">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="xxs-w light-bg border-0 text-center px-2">
+            <!-- [(ngModel)]="selectAllFlag" (click)="selectAllCust(selectAllFlag)" -->
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th class="light-bg border-0 font-weight-normal"><span class="d-flex">Fund Name  <i
+                class="material-icons pl-2" (click)="sortTableData('FundName')">sort</i></span></th>
+          <th class="light-bg border-0 font-weight-normal"><span class="d-flex">Fund Family <i
+                class="material-icons pl-2" (click)="sortTableData('FundFamilyName')">sort</i></span></th>
+          <th class="light-bg border-0 font-weight-normal">CUSIP</th>
+          <th class="light-bg border-0 font-weight-normal">Customer Symbol</th>
+          <th class="light-bg border-0 font-weight-normal">NAV Provided?</th>
+          <th class="light-bg border-0 font-weight-normal">MIL Rate Provided?</th>
+          <th class="light-bg border-0 font-weight-normal">Distribution Provided?</th>
+          <!-- <th>Equity</th> -->
+          <th class="xs-w light-bg border-0 text-center">
+            <i class="material-icons cursor-pointer">more_vert</i>
+          </th>
+          <!-- <th>Actions</th> -->
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-sf_singleRow let-fund>
+        <tr>
+          <td>
+            <p-tableCheckbox [value]="sf_singleRow"></p-tableCheckbox>
+            <!-- <p-checkbox name="selectcontact"  binary="true" [(ngModel)]="contact.checked"></p-checkbox>  [(ngModel)]="contact.checked" -->
+          </td>
+          <td class="text-break text-elips">{{fund.FundName ? fund.FundName: ' -- '}}</td>
+          <td class="text-break text-elips">{{fund.FundFamilyName ? fund.FundFamilyName: ' -- '}}</td>
+          <td class="text-break text-elips">{{fund.CUSIP ? fund.CUSIP: ' -- '}}</td>
+          <td class="text-break">{{fund.CustomerSymbol ? fund.CustomerSymbol: ' -- '}}</td>
+          <td class="text-break">{{fund.IsNAVProvided ? 'Yes': 'No'}}</td>
+          <td class="text-break">{{fund.IsMilRateProvided ? 'Yes': 'No'}}</td>
+          <td class="text-break">{{fund.IsDistributionProvided ? 'Yes': 'No'}}</td>
+          <!-- <td class="text-break">{{lsf.equity ? lsf.equity : '--'}}</td> -->
+          <td class="text-center">
+            <span><i class="material-icons cursor-pointer" (click)="populateFundDetails('edit',fund)">edit</i>
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="row" *ngIf="(!sourceFundList || (sourceFundList &&  !sourceFundList.length)) && alertMsg.show">
+    <div class="col-12 mt-5 pt-5">
+      <h4 class="non-fund-box text-muted text-center w-100">{{alertMsg.msg}}</h4>
+    </div>
+  </div>
+
+</div>
+
+<app-loading-icon [loader]="loadingInfo"></app-loading-icon>
+
+<!-- Add and Edit Source Funds -->
+<div class="modal overflow-auto" *ngIf="custPopups.addSourceFundLink" [ngClass]="{'show modal-active': custPopups.addSourceFundLink}">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 light-bg">
+      <div class="modal-header border-0 pb-1">
+        <h5 class="modal-title " *ngIf="custPopups.type == 'new'">Link New Sourced Fund</h5>
+        <h5 class="modal-title " *ngIf="custPopups.type == 'edit'">{{newLinkSrcFund.fundsrc}}</h5>
+        <button type="button" class="btn px-0" (click)="popupClose('c')">
+          <i class="material-icons xs-text font-weight-bold">close</i>
+        </button>
+      </div>
+      <div class="modal-body py-0">
+        <form #addNewLink="ngForm" class="bg-white rounded p-3">
+          <div class="row ">
+            <div class="col-12 border-bottom ">
+              <div class="form-group">
+                <label class="font-weight-bold xxs-text">Fund Family Name<span class="text-danger">*</span> </label>
+                <select *ngIf="custPopups.type == 'new'" class="form-control" placeholder="Select a Fund family"
+                  name="family-name" [(ngModel)]="newLinkSrcFund.fundFamilyId" [disabled]="custPopups.type == 'edit'"
+                  required (change)="onFundFamilySelection($event)">
+                  <option value="">--Select--</option>
+                  <option *ngFor="let item of ffamilyList" [value]="item.Id">{{item.DisplayText}}</option>
+                </select>
+                <input *ngIf="custPopups.type == 'edit'" class="form-control" disabled="true" type="text"
+                  name="family-name" [(ngModel)]="newLinkSrcFund.fundfamily" />
+              </div>
+              <div class="form-group">
+                <label class="font-weight-bold xxs-text">Source Fund Name <span class="text-danger">*</span> </label>
+                <span *ngIf="waitForSFList" class="fa fa-circle-o-notch fa-spin ng-star-inserted px-2"></span>
+                <select *ngIf="custPopups.type == 'new'" class="form-control" placeholder="Select a Fund family"
+                  name="source-fund" [(ngModel)]="newLinkSrcFund.fundId" [disabled]="custPopups.type == 'edit'"
+                  required>
+                  <option value="">--Select--</option>
+                  <option *ngFor="let item of sfListByFF" [value]="item.Id">{{item.FundName}}</option>
+                </select>
+                <input *ngIf="custPopups.type == 'edit'" class="form-control" disabled="true" type="text"
+                  name="fund-name" [(ngModel)]="newLinkSrcFund.fundsrc" />
+              </div>
+              <div class="form-group">
+                <label class="font-weight-bold xxs-text">Customer Symbol </label>
+                <span class="text-muted xxs-text"> (15 Characters max)</span>
+                <input class="form-control" type="text" placeholder="eg. XYZ" name="customer-symbol" size="15" maxlength="15"
+                  [(ngModel)]="newLinkSrcFund.symbol" />
+              </div>
+            </div>
+            <div class="col-6 p-3">
+              <div class="font-weight-bold xxs-text mb-2">Provide NAV in file?<span class="text-danger">*</span></div>
+              <p-inputSwitch name="NAV" [(ngModel)]="newLinkSrcFund.nav"></p-inputSwitch>
+              <!--  [(ngModel)]="sflFilterBtns.nav"-->
+            </div>
+
+            <div class="col-md-6 p-3">
+              <div class="font-weight-bold xxs-text mb-2">Provide MIL Rate?<span class="text-danger">*</span></div>
+              <p-inputSwitch name="MIL" [(ngModel)]="newLinkSrcFund.mil"></p-inputSwitch>
+              <!-- [(ngModel)]="sflFilterBtns.mil" -->
+            </div>
+
+            <div class="col-6 ">
+              <div class="font-weight-bold xxs-text mb-2">Provide Distribution in File?<span
+                  class="text-danger">*</span></div>
+              <p-inputSwitch name="distribution" [(ngModel)]="newLinkSrcFund.distributor"></p-inputSwitch>
+              <!-- [(ngModel)]="sflFilterBtns.distributor" -->
+            </div>
+            <!-- <div class="col-12 text-center" *ngIf="alertMsg.show">
+                    <span class="text-danger text-weight-600">{{alertMsg.msg}}</span>
+                  </div> -->
+          </div>
+
+        </form>
+      </div>
+      <div class="row justify-content-end w-100 mx-0 p-3">
+        <!-- <label class="xxxs-text text-muted"><span class="text-danger">*</span> Fields marked with <span class="text-danger">*</span> are mandatory</label> -->
+
+        <button type="button" class="btn btn-sm secondary-bg text-uppercase text-white float-right xl-w mr-3"
+          (click)="resetForm(custPopups.type)">Reset</button>
+
+        <button *ngIf="custPopups.type == 'new'" type="button"
+          class="btn btn-sm primary-bg text-uppercase text-white float-right xl-w"
+          [disabled]="addNewLink.invalid || loadingInfo" (click)="linkFundConfirmation()">Link</button>
+
+        <button *ngIf="custPopups.type == 'edit'" type="button"
+          class="btn btn-sm danger-bg text-uppercase text-white float-right xl-w mr-3"
+          [disabled]="addNewLink.invalid || loadingInfo" (click)="unlinkFundConfirmation()">Unlink Fund</button>
+
+        <button *ngIf="custPopups.type == 'edit'" type="button"
+          class="btn btn-sm primary-bg text-uppercase text-white float-right xl-w"
+          [disabled]="addNewLink.invalid || loadingInfo" (click)="updateFundConfirmation()">Save</button>
+      </div>
+      <div class="px-3 py-2">
+        <label class="xxs-text"><span class="text-danger">*</span> Fields marked with <span class="text-danger">*</span>
+          are mandatory</label>
+      </div>
+    </div>
+  </div>
+
+</div>

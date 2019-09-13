@@ -1,0 +1,9 @@
+/* .active-customer-details{background: #efefef; border-left: 3px solid #6581C0;margin: -1px;}*/ 
+/* .overflow-x-hiddine{ overflow-x: hidden;} */
+/* .bg-gray-shade{background: #F3F4F8;} */
+/* .list-box{border: 1px solid #e9ecef; height: 200px; overflow-y: auto; overflow-x: hidden;} */
+/* .list-box .item:hover{ background: #F3F4F8; } */
+/* .list-box .item-selected {background: #e9ecef;} */
+.item{border-left: 3px solid transparent;}
+.non-fund-box{margin-top: 25%;}
+.list-group-item-action:hover{background: #f3f3f385 !important;}

@@ -1,0 +1,476 @@
+<div *ngIf="!loadingInfo">
+  <div class="d-flex p-2 border-left border-right">
+    <div class="position-relative py-1">
+      <form>
+        <input type="search"  name="searchText" [(ngModel)]="searchText" class="form-control form-control-sm border-0 rounded-0 pr-4 xxxxl-w"
+          placeholder="Search">
+        <!-- <i class="material-icons position-absolute top-0 right-0 text-muted pt-2 pr-1 cursor-pointer"
+          (click)="onSearchPendingFundBtnClick(true)">search</i> -->
+        <button class="btn border-0 px-1 material-icons position-absolute top-0 right-0 text-muted pt-2 cursor-pointer" 
+          (click)="onSearchPendingFundBtnClick(true)">search</button>
+      </form>      
+    </div>
+    <div class="ml-auto pt-1 secondary-text">
+      <span class="mx-2"><i class="material-icons cursor-pointer" *ngIf="selectedPendingFundList.length"
+          (click)="PerformAction('DeleteMultiple')">delete</i></span>
+      <span class="mx-2" *ngIf="pendingFundList.length">
+        <img class="mt-n3 cursor-pointer" width="19px" src="assets/images/icons/icon_download.png"
+          (click)="onDownloadPendingFundBtnClick()">
+      </span>
+      <span class="mx-2">
+        <i class="material-icons font-weight-bold cursor-pointer" (click)="loadPendingFundData('add', '')">add</i>
+      </span>
+      <span class="mx-2">
+        <img class="mt-n3 cursor-pointer" width="19px" src="assets/images/icons/icon_filter.png"
+          (click)="onToggleFilterSidebarBtnClick()">
+      </span>
+    </div>
+  </div>
+
+  <div class="" *ngIf="pendingFundList.length && !alertMsg.show">
+    <p-table class="dataListTable" [value]="pendingFundList" [paginator]="true" [rows]="10" #dt sortMode="multiple"
+      [responsive]="true" [(selection)]="selectedPendingFundList">
+      <ng-template pTemplate="header">
+        <tr>
+          <th class="xxs-w light-bg border-0 text-center px-2">
+            <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+          </th>
+          <th class="light-bg border-0 font-weight-normal">
+            <span class="d-flex">Fund Name <i class="material-icons pl-2">sort</i></span>
+          </th>
+          <th class="light-bg border-0 font-weight-normal">CUSIP</th>
+          <th class="light-bg border-0 font-weight-normal">Ticker</th>
+          <th class="light-bg border-0 font-weight-normal">Extended Ticker</th>
+          <th class="light-bg border-0 font-weight-normal">Internal Number</th>
+          <th class="light-bg border-0 font-weight-normal">Dollar Fund</th>
+          <th class="light-bg border-0 font-weight-normal">Mil Rate</th>
+          <th class="light-bg border-0 font-weight-normal">NAV</th>
+          <th class="light-bg border-0 font-weight-normal">Trading</th>
+          <th class="light-bg border-0 font-weight-normal">Trading State Date</th>
+          <th class="light-bg border-0 font-weight-normal">Pricing Source</th>
+          <th class="light-bg border-0 font-weight-normal">Dividend Frequency</th>
+          <th class="light-bg border-0 font-weight-normal">Status</th>
+          <th class="light-bg border-0 font-weight-normal">Comments</th>
+          <th class="md-w light-bg border-0 text-center">
+            <i class="material-icons cursor-pointer">more_vert</i>
+          </th>
+        </tr>
+      </ng-template>
+      <ng-template pTemplate="body" let-singleRow let-pendingFund>
+        <tr>
+          <td class="text-center px-2">
+            <p-tableCheckbox [value]="singleRow"></p-tableCheckbox>
+            <!-- <p-checkbox name="selectcontact"  binary="true" [(ngModel)]="pendingFund.checked"></p-checkbox>  [(ngModel)]="pendingFund.checked" -->
+          </td>
+          <td class="text-break">{{pendingFund.FundName ? pendingFund.FundName : '--'}}</td>
+          <td class="text-break">{{pendingFund.CUSIP ? pendingFund.CUSIP : '--'}}</td>
+          <td class="text-break">{{pendingFund.Ticker ? pendingFund.Ticker : '--'}}</td>
+          <td class="text-break">{{pendingFund.ExtendedTicker ? pendingFund.ExtendedTicker : '--'}}</td>
+          <td class="text-break">{{pendingFund.InternalNumber ? pendingFund.InternalNumber : '--'}}</td>
+          <td class="text-break">{{pendingFund.IsDollarFund ? 'Yes' : 'No'}}</td>
+          <td class="text-break">{{pendingFund.IsMilRateUsed ? 'Yes' : 'No'}}</td>
+          <td class="text-break">{{pendingFund.IsNavUsed ? 'Yes' : 'No'}}</td>
+          <td class="text-break">{{pendingFund.IsFundTrading ? 'Yes' : 'No'}}</td>
+          <td class="text-break">
+            {{pendingFund.TradingStartDate ? (pendingFund.TradingStartDate | date : 'MM/dd/yyyy' ) : '--'}}</td>
+          <td class="text-break">
+            {{pendingFund.PrimaryPricingSource.Name ? pendingFund.PrimaryPricingSource.Name : '--'}}</td>
+          <td class="text-break">{{pendingFund.DividendFrequency.Name ? pendingFund.DividendFrequency.Name : '--'}}</td>
+          <td class="text-break">{{pendingFund.Status.Name ? pendingFund.Status.Name : '--'}}</td>
+          <td class="text-break">{{pendingFund.Comments ? pendingFund.Comments : '--'}}</td>
+          <td class="text-center">
+            <span [ngClass]="{'d-none': selectedPendingFundList.length}">
+                <i class="material-icons cursor-pointer pr-3"
+                (click)="loadPendingFundCustomers('open', pendingFund)">remove_red_eye</i>
+              <i class="material-icons cursor-pointer secondary-text"
+                (click)="loadPendingFundData('edit', pendingFund)">edit</i>
+            </span>
+          </td>
+        </tr>
+      </ng-template>
+    </p-table>
+  </div>
+
+  <div class="row" *ngIf="!pendingFundList.length && alertMsg.show">
+    <div class="col-12 mt-5 pt-5">
+      <h4 class="non-fund-box text-muted text-center w-100">{{alertMsg.msg}}</h4>
+    </div>
+  </div>
+</div>
+
+<app-loading-icon [loader]="loadingInfo"></app-loading-icon>
+
+<div class="modal overflow-auto" id="addEditModel" *ngIf="popup.isAddEdit" [ngClass]="{'show modal-active': popup.isAddEdit}">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content light-bg">
+
+      <!-- Modal Header -->
+      <div class="modal-header pb-0 border-0">
+        <h5 class="modal-title white-text" *ngIf="popup.type === 'add'">Add New Pending Fund</h5>
+        <h5 class="modal-title white-text" *ngIf="popup.type === 'edit'">{{pendingFundForm.value?.FundName}}</h5>
+        <button type="button" class="btn px-0" (click)="popupClose()">
+          <i class="material-icons xs-text font-weight-bold">close</i>
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body ">
+        <form [formGroup]="pendingFundForm" autocomplete="off">
+          <!-- #addContact="ngForm" -->
+          <div class="row mb-2">
+            <!-- part 1 left side -->
+            <div class="col-6 pr-0">
+              <div class="bg-white rounded px-3 py-1">
+                <div class="form-group">
+                  <label class="font-w-5 xxs-text">Pending Fund Name<span class="text-danger font-w-6">*</span> </label>
+                  <span class="text-muted xxs-text"> (50 Characters max)</span>
+                  <input class="form-control" type="text" placeholder="eg.ABC Company" name="FundName"
+                    formControlName="FundName" required maxlength="50" />
+                </div>
+
+                <div class="row border-bottom mb-3">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-w-5 xxs-text">Moved Fund Family</label>
+                      <select class="form-control" name="MovedFundFamilyGUID" formControlName="MovedFundFamilyGUID">
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.movedFndFamilyList" [value]="item.Value">
+                          {{item.DisplayText}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-w-5 xxs-text">CUSIP<span class="text-danger font-w-6">*</span> </label> <span
+                        class="text-muted xxs-text"> (9 Characters max)</span>
+                      <input class="form-control" type="text" placeholder="CUSIP" name="CUSIP"
+                        formControlName="CUSIP" maxlength="9" />
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-w-5 xxs-text">Ticket<span class="text-danger font-w-6">*</span> </label> <span
+                        class="text-muted xxs-text"> (5 Characters max)</span>
+                      <input class="form-control" type="text" placeholder="Ticket" name="Ticker"
+                        formControlName="Ticker" maxlength="5" required />
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-w-5 xxs-text">Extended Ticket </label> <span class="text-muted xxs-text"> (10
+                        Characters max)</span>
+                      <input class="form-control" type="text" placeholder="Extended Ticket"
+                        name="ExtendedTicker" formControlName="ExtendedTicker"
+                        maxlength="10" />
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-w-5 xxs-text">Internal Number </label> <span class="text-muted xxs-text"> (15
+                        Characters max)</span>
+                      <input class="form-control" type="text" placeholder="Internal Number" name="InternalNumber"
+                        formControlName="InternalNumber" maxlength="15" />
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row border-bottom mb-3">
+                  <div class="col-4">
+                    <label class="font-w-5 xxs-text">Dollar Fund?<span class="text-danger font-w-6">*</span></label>
+                    <br />
+                    <p-inputSwitch name="IsDollarFund" formControlName="IsDollarFund"></p-inputSwitch>
+                  </div>
+                  <div class="col-4">
+                    <label class="font-w-5 xxs-text">NAV User?<span class="text-danger font-w-6">*</span></label>
+                    <br />
+                    <p-inputSwitch name="IsNavUsed" formControlName="IsNavUsed"></p-inputSwitch>
+                  </div>
+                  <div class="col-4">
+                    <label class="font-w-5 xxs-text">Is Fund Trading?<span class="text-danger font-w-6">*</span></label>
+                    <br />
+                    <p-inputSwitch name="IsFundTrading" formControlName="IsFundTrading"></p-inputSwitch>
+                  </div>
+                </div>
+
+                <div class="row">
+
+                  <div class="col-6">
+                    <div class="form-group ">
+                      <label class="font-w-5 xxs-text">Trading Start Date </label>
+                      <div>
+                        <p-calendar name="TradingStartDate" formControlName="TradingStartDate" styleClass="w-100"
+                          inputStyleClass="w-100" dateFormat="mm/dd/yy" readonlyInput="true"></p-calendar>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="form-group ">
+                      <label class="font-w-5 xxs-text">Dividend Frequency</label>
+                      <select class="form-control" name="DividendFrequencyGUID" formControlName="DividendFrequencyGUID">
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.dividendFrequencyList" [value]="item.Value">
+                          {{item.DisplayText}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-w-5 xxs-text">Pricing Source </label> <span class="text-muted xxs-text">
+                        (Primary)</span>
+                      <select class="form-control" name="PrimaryPricingSourceCode"
+                        formControlName="PrimaryPricingSourceCode">
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.primaryPricingSourceList" [value]="item.Value">
+                          {{item.DisplayText}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-w-5 xxs-text">Pricing Source </label> <span class="text-muted xxs-text">
+                        (Secondary)</span>
+                      <select class="form-control" name="SecondaryPricingSourceCode"
+                        formControlName="SecondaryPricingSourceCode">
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.secondaryPricingSourceList" [value]="item.Value">
+                          {{item.DisplayText}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+            <!-- part 2 right side -->
+            <div class="col-6">
+              <div class="bg-white rounded px-3 py-1">
+                <div class="row">
+                  <div class="col-6">
+                    <div class="form-group">
+                      <label class="font-w-5 xxs-text">Status </label>
+                      <select class="form-control" name="StatusId" formControlName="StatusId">
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.statusList" [value]="item.Value">{{item.DisplayText}}
+                        </option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="form-group">
+                  <label class="font-w-5 xxs-text">Comments </label> <span class="text-muted xxs-text"> (50 Characters
+                    max)</span>
+                  <input class="form-control" type="text" placeholder="Comments" name="Comments"
+                    formControlName="Comments" maxlength="50" />
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="px-3 pb-3">
+        <label class="xxs-text text-muted"><span class="text-danger">*</span> Fields marked with <span
+            class="text-danger">*</span> are mandatory</label>
+        <button type="button" class="btn btn-sm primary-bg text-white float-right xl-w text-uppercase"
+          *ngIf="popup.type === 'add'" [disabled]="pendingFundForm.invalid || loadingInfo"
+          (click)="PerformAction('Add')">Add</button>
+
+        <button type="button" class="btn btn-sm primary-bg text-uppercase text-white float-right xl-w"
+          *ngIf="popup.type === 'edit'" [disabled]="pendingFundForm.invalid || loadingInfo"
+          (click)="PerformAction('Update')">Save</button>
+
+        <button type="button" class="btn btn-sm success-bg text-uppercase text-white float-right mr-3"
+          *ngIf="popup.type === 'edit'" (click)="PerformAction('ConvertToSource')">Move To source</button>
+        <button type="button" class="btn btn-sm danger-bg text-uppercase text-white float-right mr-3"
+          *ngIf="popup.type === 'edit'" (click)="loadJunkFundPopup('open')">Move To junk</button>
+
+        <button type="button" class="btn btn-sm secondary-bg text-white xl-w mr-3 text-uppercase float-right"
+          (click)="onResetFormFieldsClick(popup.type)">Reset</button>
+
+        <!-- Loading icons -->
+        <span *ngIf="loadingInfo" class="fa fa-circle-o-notch fa-spin float-right mt-3 px-4"></span>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="modal" id="moveToJunkFundModal" *ngIf="popup.isJunkFund "
+  [ngClass]="{'show modal-active': popup.isJunkFund }">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 light-bg">
+
+      <!-- Modal Header -->
+      <div class="modal-header pb-0 border-0">
+        <h5 class="modal-title white-text ">Move To Junk Fund</h5>
+        <!-- <button type="button" class="btn px-0" (click)="popupClose()">
+          <i class="material-icons xs-text font-weight-bold">close</i> 
+        </button> -->
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form [formGroup]="convertToJunkFundForm" autocomplete="off" class="bg-white rounded px-3 py-2">
+          <div class="row">
+            <div class="col-12">
+              <div class="row border-bottom mb-3">
+                <div class="col-12">
+                  <div class="form-group">
+                    <label class="font-weight-bold xxs-text">Pending Fund Name<span
+                        class="text-danger font-weight-bold">*</span> </label> <span class="text-muted xxs-text"> (50
+                      Characters max)</span>
+                    <input class="form-control" type="text" name="PendingFundName" formControlName="PendingFundName"
+                      readonly="true" required maxlength="50" />
+                  </div>
+                  <div class="form-group">
+                    <label class="font-weight-bold xxs-text">Reason<span class="text-danger font-weight-bold">*</span>
+                    </label>
+                    <select class="form-control" name="ReasonId" formControlName="ReasonId">
+                      <option value="">-- Select --</option>
+                      <option *ngFor="let item of dropdownList.reasonList" [value]="item.Value">{{item.DisplayText}}
+                      </option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label class="font-weight-bold xxs-text">Reason Comments</label> <span class="text-muted xxs-text">
+                      (70 Characters max)</span>
+                    <input class="form-control" type="text" placeholder="Reason Comments" name="ReasonComments"
+                      formControlName="ReasonComments" maxlength="50" />
+                  </div>
+                </div>
+              </div>
+
+              <div class="row border-bottom mb-3">
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="font-weight-bold xxs-text">Merged Fund Family</label>
+                    <select class="form-control" name="MergedFundFamilyGUID" formControlName="MergedFundFamilyGUID"
+                      (change)="onMergedFundFamilySelection($event)">
+                      <option value="">-- Select --</option>
+                      <option *ngFor="let item of dropdownList.mergedFundFamilyList" [value]="item.Value">
+                        {{item.DisplayText}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+                <div class="col-6">
+                  <div class="form-group">
+                    <label class="font-weight-bold xxs-text">Merged Source Fund
+                      <span class="text-danger" *ngIf="requiredMergedFund">*</span>
+                    </label>
+                    <span *ngIf="waitForMergedSourcedFundList"
+                      class="fa fa-circle-o-notch fa-spin ng-star-inserted px-2"></span>
+                    <select class="form-control" name="MergedFundGUID" formControlName="MergedFundGUID">
+                      <option value="">-- Select --</option>
+                      <option *ngFor="let item of dropdownList.mergedSourcedFundList" [value]="item.Value">
+                        {{item.DisplayText}}
+                      </option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label class="font-weight-bold xxs-text">Corporate Actions </label>
+                <div>
+                  <p-checkbox class="xxxs-text" name="HasCorporateActions" formControlName="HasCorporateActions"
+                    binary="true" label="Do NOT create corporate action when junking fund"></p-checkbox>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <!-- Modal footer -->
+      <div class="px-3 ">
+        <button type="button" class="btn btn-sm danger-bg text-white float-right text-uppercase xl-w"
+          [disabled]="convertToJunkFundForm.invalid || loadingInfo" (click)="PerformAction('ConvertToJunk')">Move to
+          junk</button>
+        <button type="button" class="btn btn-sm secondary-bg text-white float-right text-uppercase xl-w mr-3"
+          (click)="loadJunkFundPopup('close')">cancel</button>
+        <!-- Loading icons -->
+        <span *ngIf="loadingInfo" class="fa fa-circle-o-notch fa-spin float-right mt-3 px-4"></span>
+      </div>
+      <div class="px-3 py-2">
+        <label class="xxs-text"><span class="text-danger">*</span> Fields marked with <span class="text-danger">*</span>
+          are mandatory</label>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- customer Modal -->
+<div class="modal" id="customerViewModal" *ngIf="popup.customerView"
+  [ngClass]="{'show modal-active': popup.customerView }">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 light-bg">
+
+      <div class="modal-header pb-0 border-0">
+        <h5 class="modal-title white-text">Customers of {{selectedPendingFundCustomerData?.FundName}}</h5>
+        <button type="button" class="btn px-0" (click)="loadPendingFundCustomers('close', '')">
+          <i class="material-icons xs-text font-weight-bold">close</i>
+        </button>
+      </div>
+
+      <div class="modal-body pb-0">
+        <div *ngIf="pendingFundCustomerList.length || isCustomerSearchBtnClick" class="row bg-light px-3 py-2">
+          <div class="col-12 p-0 position-relative">
+            <input class="border-0 form-control form-control-sm ml-auto pr-4 rounded-0 xxxxl-w" name="searchCustomerText"
+              placeholder="Search Customer By Name" type="search" [(ngModel)]="searchCustomerText">
+            <i class="material-icons position-absolute pr-1 pt-1 right-0 text-muted top-0 cursor-pointer" (click)="onSearchPendingFundCustomerBtnClick(true)">search</i>
+          </div>
+        </div>
+        <div class="row">
+          <div class="" *ngIf="pendingFundCustomerList.length && !alertMsg.show">
+            <p-table class="dataListTable" [value]="pendingFundCustomerList" [paginator]="true" [rows]="10" #dt
+              sortMode="multiple" [responsive]="true">
+              <ng-template pTemplate="header">
+                <tr>
+                  <th class="light-bg border-0 font-weight-normal">Customer Name</th>
+                  <th class="xs-w light-bg border-0 text-center">
+                    <i class="material-icons cursor-pointer">more_vert</i>
+                  </th>
+                </tr>
+              </ng-template>
+              <ng-template pTemplate="body" let-singleRow let-pendingFundCustomer>
+                <tr>
+                  <td class="text-break">{{pendingFundCustomer.Name ? pendingFundCustomer.Name : '--'}}</td>
+                  <td class="text-center">
+                    <span>
+                      <i class="material-icons cursor-pointer secondary-text " (click)="gotoCustomer(pendingFundCustomer.Name)" >launch</i>
+                    </span>
+                  </td>
+                </tr>
+              </ng-template>
+            </p-table>
+          </div>
+          <div class="col-12" *ngIf="customerAlertMsg.show">
+              <div>
+                <h4 class="non-fund-box text-muted text-center w-100">{{customerAlertMsg.msg}}</h4>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,131 @@
+<div class="col-12 bg-white">
+  <div class="row py-3 border-bottom">
+    <div class="col-12 info-text font-weight-bold mb-3 xs-text">
+      File
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">File Type<span class="text-danger">*</span> </label>
+      <select class="form-control">
+        <option>--Select--</option>
+      </select>
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">Status<span class="text-danger">*</span> </label>
+      <select class="form-control">
+        <option>Active</option>
+      </select>
+    </div>
+    <div class="col-12 d-flex mt-4">
+      <p-checkbox class="xxxs-text"></p-checkbox>
+      <label class="ml-2 mt-n1">Recurs?</label>
+    </div>
+  </div>
+  <div class="row pt-3 pb-4 border-bottom">
+    <div class="col-12 info-text font-weight-bold mb-3 xs-text">
+      File Transmission Times
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">Start Date<span class="text-danger">*</span> </label>
+      <input type="date" class="form-control">
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">Time</label>
+      <select class="form-control">
+        <option>01:00 PM</option>
+      </select>
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">End Date<span class="text-danger">*</span> </label>
+      <input type="date" class="form-control">
+    </div>
+  </div>
+  <div class="row pt-3 pb-4 border-bottom">
+    <div class="col-12 info-text font-weight-bold mb-3 xs-text">
+      Recurrence Pattern
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">Recurrence<span class="text-danger">*</span> </label>
+      <select class="form-control">
+        <option>Weekly</option>
+      </select>
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">Recur every<span class="text-danger">*</span></label>
+      <div class="d-flex">
+        <select class="form-control">
+          <option>Weekly</option>
+        </select>
+        <span class="flex-shrink-0 ml-2 pt-1">Week(s) on:</span>
+      </div>
+    </div>
+    <div class="col-4">
+      <label class="font-weight-bold secondary-text">Days<span class="text-danger">*</span> </label>
+      <div>
+        <button type="button" class="btn btn-sm primary-bg text-white xxs-w mr-2">M</button>
+        <button type="button" class="btn btn-sm primary-bg text-white xxs-w mr-2">T</button>
+        <button type="button" class="btn btn-sm light-bg  xxs-w mr-2">W</button>
+        <button type="button" class="btn btn-sm light-bg xxs-w mr-2">T</button>
+        <button type="button" class="btn btn-sm primary-bg text-white xxs-w mr-2">F</button>
+        <button type="button" class="btn btn-sm light-bg xxs-w mr-2">S</button>
+        <button type="button" class="btn btn-sm primary-bg text-white xxs-w mr-2">S</button>
+      </div>
+    </div>
+  </div>
+  <div class="row pt-3 pb-4 border-bottom">
+    <div class="col-12 info-text font-weight-bold mb-3 xs-text">
+      File Transmission Method
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">File Transmission Method<span class="text-danger">*</span> </label>
+      <select class="form-control">
+        <option>Email</option>
+      </select>
+    </div>
+    <div class="col-6">
+      <label class="font-weight-bold secondary-text">Email Address<span class="text-danger">*</span></label>
+      <div class="d-flex">
+        <input type="email" class="form-control">
+        <button type="button" class="btn btn-sm light-bg xxs-w mx-2"><i class="material-icons">add</i></button>
+        <button type="button" class="btn btn-sm light-bg xxs-w"><i class="material-icons">remove</i></button>
+      </div>
+    </div>
+  </div>
+  <div class="row pt-3 pb-4">
+    <div class="col-12 info-text font-weight-bold mb-3 xs-text">
+      Subscribed Services
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">Dividend Calendar<span class="text-danger">*</span> </label>
+      <div>
+        <p-inputSwitch></p-inputSwitch>
+      </div>
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">Provide NAV in File?<span class="text-danger">*</span> </label>
+      <div>
+        <p-inputSwitch></p-inputSwitch>
+      </div>
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">Provide MIL in Rate?<span class="text-danger">*</span> </label>
+      <div>
+        <p-inputSwitch></p-inputSwitch>
+      </div>
+    </div>
+    <div class="col-3">
+      <label class="font-weight-bold secondary-text">Provide Distribution in File?<span class="text-danger">*</span>
+      </label>
+      <div>
+        <p-inputSwitch></p-inputSwitch>
+      </div>
+    </div>
+    <div class="col-12 text-right mt-5">
+      <button type="button"
+        class="btn btn-sm secondary-bg text-white xxxl-w mr-3 text-uppercase">Reset</button>
+      <button type="button"
+        class="btn btn-sm danger-bg text-white xxxl-w mr-3 text-uppercase">Remove Recurrence</button>
+      <button type="button"
+        class="btn btn-sm primary-bg text-white xxxl-w mr-3 text-uppercase">Update</button>
+    </div>
+  </div>
+</div>

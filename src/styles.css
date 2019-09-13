@@ -1,0 +1,83 @@
+/* You can add global styles to this file, and also import other style files */
+
+/* Loader...*/
+/* body, html {height: 100%;} */
+/* .app-loading {position: relative;display: flex;flex-direction: column;align-items: center;justify-content: center;height: 100%;} */
+/* .lds-ring {display: inline-block;position: relative;width: 85px;height: 85px;} */
+.lds-ring div {box-sizing: border-box;border: 5px solid #EDA039;animation: lds-ring 1.0s cubic-bezier(0.4, 0.1, 0.4, 1) infinite;border-color: #EDA039 transparent transparent transparent;/* display: block;position: absolute;width: 80px;height: 80px;margin: 6px; border-radius: 50%; */}
+.lds-ring div:nth-child(1) {animation-delay: -0.30s;}
+.lds-ring div:nth-child(2) {animation-delay: -0.20s;}
+.lds-ring div:nth-child(3) {animation-delay: -0.10s;}
+@keyframes lds-ring {0% {transform: rotate(0deg);}100% {transform: rotate(360deg);}}
+.z-index-99999{z-index: 99999;}
+.light-trans-bg{background: #e9ecef08;}
+
+/* PrimeNG Table css */
+.dataListTable .ui-paginator .ui-paginator-pages .ui-paginator-page.ui-state-active {background-color: #EDA039 !important;}
+/* .dataListTable .ui-chkbox .ui-chkbox-box.ui-state-active {border-color: #EDA039;background-color: #EDA039;}
+.dataListTable .ui-chkbox .ui-chkbox-box.ui-state-active:not(.ui-state-disabled):hover {border-color: #EDA039;background-color: #EDA039;} */
+.dataListTable a, .dataListTable a:hover {color: #333;}
+.dataListTable .rangeCalender .ui-datepicker {top: 46px;width: 240%;}
+.dataListTable .rangeCalender input {border-radius: 20px; width: 280px;padding-left: 30px;}
+.dataListTable .globalSearch, .dataListTable .rangeCalender input {border: 2px solid #ddd;}
+/* .dataListTable .ui-table .ui-table-thead > tr > th {background-color: #f0f5fc;} */
+.dataListTable .ui-table .ui-table-tbody > tr:nth-child(even), .dataListTable .ui-table-caption {background-color: transparent !important;}
+.dataTableTopContent .ui-dropdown {border-radius: 20px;border: 2px solid #ddd;}
+.dataTableTopContent .ui-dropdown:not(.ui-state-disabled):hover, .dataListTable .ui-inputtext:enabled:hover:not(.ui-state-error) {border-color: #ddd;}
+.dataTableTopContent .ui-dropdown-label {border-radius: 20px;}
+.dataTableTopContent .ui-dropdown-trigger {border-radius: 20px;border-right: 1px solid #ddd;}
+
+/* PrimeNG checkbox css...amrut */
+.ui-chkbox .ui-chkbox-box.ui-state-active {border-color: #EDA039 !important;background-color: #EDA039 !important;}
+.ui-chkbox .ui-chkbox-box.ui-state-active:not(.ui-state-disabled):hover {border-color: #EDA039 !important;background-color: #EDA039 !important;}
+
+/* Modal popup dynamic design css */
+.modal-active { display: block !important; background: rgba(0,0,0,0.2)}
+
+/* .content-nav-pill .nav-link {color: #6C757D; cursor: pointer;} */
+/* .content-nav-pill span{ color: #cbd3da;} */
+.content-nav-pill .nav-link.active{color: #EDA039 !important;}
+
+
+.ui-inputswitch.ui-inputswitch-checked .ui-inputswitch-slider, .ui-inputswitch.ui-inputswitch-checked.ui-inputswitch-focus .ui-inputswitch-slider {background-color: #2aa848 !important;}
+/* .ui-inputswitch:not(.ui-state-disabled):hover .ui-inputswitch-slider {background-color: #Dc3545 !important;} */
+.ui-inputswitch.ui-inputswitch-focus .ui-inputswitch-slider {background-color: #Dc3545 !important;}
+.ui-inputswitch .ui-inputswitch-slider{ background: #Dc3545 !important;}
+
+/* Toast css */
+.custom-toast { min-width: 400px;}
+.custom-toast .ui-toast-message { color: #ffffff !important; background: #6581C0 !important; box-shadow: 1px 2px 6px #6581C0 !important; padding: 2px;}
+.custom-toast .ui-toast-message span.ui-toast-icon, .custom-toast .ui-toast-message .ui-toast-close-icon { display: none;}
+.custom-toast .ui-toast-message .ui-toast-message-text-content {font-size: 17px; margin-left: 0px}
+
+/* Radio Button Css */
+.p-radio .ui-radiobutton-label{ font-size: 12px !important; word-break: break-all}
+.ui-radiobutton .ui-radiobutton-box.ui-state-active{ background-color: #EDA039 !important; border-color:#EDA039 !important; }
+
+/* List Box Multi select */
+.ui-listbox .ui-listbox-list-wrapper { border: 1px solid #dee2e6; height: 200px !important;}
+.ui-listbox .ui-listbox-list-wrapper .ui-state-highlight { background: #EDA039 !important }
+/* Partial css */
+/* .searchbox-bg{background: #F5F5F6; } */
+/* .form-control{ height: auto !important; } */
+.trans-1{transition: 1s;}
+.trans-05{transition: .5s;}
+
+.trans-d-1{transition-delay: 1s;}
+.trans-d-05{transition-delay: .5s;}
+
+/* Selection button or week days button */
+.ui-selectbutton .ui-button { margin-right: 10px !important; border-radius: 3px; }
+.ui-selectbutton .ui-button.ui-state-active{background-color: #28A745 !important; border-color: #28A745 !important; color: #ffffff !important;  }
+
+/* Filter btn shape...amrut */
+.filter-btn-shape-l{border-radius: 0 0 0 4px !important;}
+.filter-btn-shape-r{border-radius: 0 0 4px 0 !important;}
+
+.silver-text{
+    color : silver;
+}
+
+.fade-text{
+    opacity : 0.2
+}

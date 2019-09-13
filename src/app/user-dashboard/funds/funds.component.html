@@ -1,0 +1,299 @@
+<div class="content py-3">
+  <div class="row">
+    <div class="col-2 position-relative pr-0" [ngStyle]="{ 'transition: 1s': !toggleFilterSlider}"
+      [hidden]="toggleFilterSlider">
+      <div>
+        <label class="secondary-text">Fund Family</label> <!--  data-toggle="modal" data-target="#addCustomerModal" -->
+        <button class="btn btn-sm primary-bg text-white text-uppercase float-right"
+          (click)="openFundFamilyPopup('add')">Add New</button>
+      </div>
+      <div class="position-relative mt-3 mb-1">
+        <form>
+          <input type="search" class="form-control form-control-sm border-0 rounded-0 pr-4" placeholder="Search"
+            name="customer-list-search" [(ngModel)]="searchFundFamily" maxlength="15"/>
+          <button class="btn border-0 px-1 material-icons position-absolute top-0 right-0 text-muted pt-2 cursor-pointer" 
+              (click)="searchFundFamilyOnClick()">search</button>
+        </form>
+      </div>
+      <div class="cursor-pointer overflow-y-auto w-100 overflow-x-hidden bg-white" [style.height.px]="dynamicHt"
+        infiniteScroll [infiniteScrollDistance]="2" [scrollWindow]="false" [infiniteScrollThrottle]="150"
+        (scrolled)="onFundFamilyListScroll()">
+        <div class="list border-bottom" *ngFor="let fundFamilyItem of fundFamilyNameList; trackBy: trackFn"
+          (click)="selectFundFamily(fundFamilyItem)">
+          <div class="item p-2" [ngClass]="{'info-border light-bg': fundFamilyItem === selectedFundFamilyObj}">
+            <div class="xs-text font-weight-bold">{{fundFamilyItem.Name}}</div>
+            <!-- <div class="text-muted xxs-text">Fund ID: {{fundFamilyItem.id}}</div> -->
+          </div>
+        </div>
+        <div class="text-center" *ngIf="fundFamilyListLoader">
+          <span class="fa fa-circle-o-notch text-secondary fa-spin  mt-3 px-4"></span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-10" *ngIf="!selectedFundFamilyObj">
+      <div class="bg-white p-3 rounded" [style.min-height.px]="dynamicHt+100">
+        <h4 class="non-fund-box text-muted text-center w-100">Select Fund Family To Load Data</h4>
+      </div>
+    </div>
+
+    <div class="col-10" *ngIf="selectedFundFamilyObj">
+      <div [style.min-height.px]="dynamicHt+100">
+        <div class="card-header d-flex secondary-bg px-3 text-white">
+          <div>{{selectedFundFamilyObj?.Name}}</div>
+          <div class="d-flex" (click)="openFundFamilyPopup('edit')">
+            <i class="material-icons pl-2 mt-1 cursor-pointer lg-text">info</i>
+          </div>
+          <!-- <span class="ml-auto" (click)="toggleSBF();"><i class="material-icons text-white  md-text">filter_list</i></span> -->
+        </div>
+
+        <!-- </div> -->
+        <div class="row mx-0">
+          <ul class="w-100 nav light-bg content-nav-pill">
+            <li class="nav-item">
+              <a class="nav-link xs-text secondary-text cursor-pointer"
+                [ngClass]="{'active': this.selectedTabView === 'contact'}"
+                (click)="onTabSelection('contact')">Contact</a>
+            </li>
+
+            <span class="mt-1 text-muted">|</span>
+            <li class="nav-item">
+              <a class="nav-link xs-text secondary-text cursor-pointer" data-toggle="pill"
+                [ngClass]="{'active': this.selectedTabView === 'sourceFunds'}"
+                (click)="onTabSelection('sourceFunds')">Source Funds</a>
+            </li>
+            <span class="mt-1 text-muted">|</span>
+            <li class="nav-item">
+              <a class="nav-link xs-text secondary-text cursor-pointer" data-toggle="pill"
+                [ngClass]="{'active': this.selectedTabView === 'pendingFunds'}"
+                (click)="onTabSelection('pendingFunds')">Pending Funds</a>
+            </li>
+            <span class="mt-1 text-muted">|</span>
+            <li class="nav-item">
+              <a class="nav-link xs-text secondary-text cursor-pointer" data-toggle="pill"
+                [ngClass]="{'active': this.selectedTabView === 'junkFunds'}" (click)="onTabSelection('junkFunds')">Junk
+                Funds</a>
+            </li>
+            <li class="nav-item ml-auto">
+              <a class="nav-link xs-text secondary-text cursor-pointer">
+                <i class="material-icons" (click)="onRefreshBtnClick()">cached</i>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="row mx-0 tab-content">
+          <div class="tab-pane w-100" id="contact" *ngIf="this.selectedTabView === 'contact'"
+            [ngClass]="{'active': this.selectedTabView === 'contact'}">
+            <app-fund-family-contacts [fundFamilyGUID]="selectedFundFamilyObj?.GUID"
+              [filterData]="filterData.fundFamilyContactFilterData"></app-fund-family-contacts>
+          </div>
+
+          <div class="tab-pane w-100" id="sourcefund" *ngIf="this.selectedTabView === 'sourceFunds'"
+            [ngClass]="{'active': this.selectedTabView === 'sourceFunds'}">
+            <app-source-funds [fundFamilyGUID]="selectedFundFamilyObj?.GUID"
+              [filterData]="filterData.sourcedFundFilterData"></app-source-funds>
+          </div>
+
+          <div class="tab-pane w-100" *ngIf="this.selectedTabView === 'pendingFunds'"
+            [ngClass]="{'active': this.selectedTabView === 'pendingFunds'}" id="pendingfund">
+            <app-pending-funds [fundFamilyGUID]="selectedFundFamilyObj?.GUID"
+              [filterData]="filterData.pendingFundFilterData"></app-pending-funds>
+          </div>
+
+          <div class="tab-pane w-100" *ngIf="this.selectedTabView === 'junkFunds'"
+            [ngClass]="{'active': this.selectedTabView === 'junkFunds'}" id="junkfund">
+            <app-junk-funds [fundFamilyGUID]="selectedFundFamilyObj?.GUID" [filterData]="filterData.junkFundFilterData">
+            </app-junk-funds>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-2 pl-0 trans-1" style="transition: 1s" [hidden]="!toggleFilterSlider">
+      <div class="card h-100 border-0">
+        <div class="card-header d-flex px-3 pb-2 secondary-bg text-white">
+          <div class="flex-grow-1">
+            <img width="18" src="assets/images/icons/icon_filter_w.png">
+            <span class="pl-2">Filter</span>
+          </div>
+          <div class="pt-1">
+            <i class="material-icons lg-text cursor-pointer" (click)="onSidebarFilterCloseBtnClick()">remove</i>
+          </div>
+        </div>
+
+        <app-fund-filters [fundFamilyGUID]="selectedFundFamilyObj?.GUID" [selectedTabView]="selectedTabView"
+          (onApplyFilterClick)="onApplyFilterClick($event)"></app-fund-filters>
+
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div class="modal overflow-auto" id="AddEditFundModal" *ngIf="popup.addEditFund"
+  [ngClass]="{'show modal-active': popup.addEditFund}">
+  <div class="modal-dialog modal-dialog-centered modal-xl">
+    <div class="modal-content light-bg border-0">
+
+      <!-- Modal Header -->
+      <div class="modal-header py-1 border-0">
+        <h5 class="modal-title white-text " *ngIf="popup.fundTyp === 'add'">Add New Fund Family</h5>
+        <h5 class="modal-title white-text " *ngIf="popup.fundTyp === 'edit'">{{selectedFundFamilyObj?.Name}}</h5>
+        <button type="button" class="btn px-0" (click)="popupClose()">
+          <i class="material-icons xs-text font-weight-bold">close</i>
+        </button>
+      </div>
+
+      <div class="modal-body">
+        <form #fundFamilyForm="ngForm" class=" ">
+          <!--pb-1 px-3 -->
+          <div class="row">
+            <div class="col-6 ">
+              <div class="bg-white rounded py-2 px-3">
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text">Fund Family Name <span class="text-danger">*</span> </label>
+                  <span class="text-muted xxs-text"> (50 Characters max)</span>
+                  <input class="form-control" type="text" placeholder="Fund Family Name" name="Name"
+                    [(ngModel)]="newFundFamilyObj.Name" maxlength="50" (keypress)="checkForAlpaNumericOnly($event)"
+                    required />
+                </div>
+
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text">Comment </label>
+                  <span class="text-muted xxs-text"> (50 Characters max)</span>
+                  <input class="form-control" type="text" name="Comment" placeholder="Comment"
+                    [(ngModel)]="newFundFamilyObj.Comments" maxlength="50"
+                    (keypress)="checkForAlpaNumericOnly($event)" />
+                </div>
+
+                <div class="form-group">
+                  <label class="font-weight-bold xxs-text">Allow Fund Family Sort? </label>
+                  <div>
+                    <p-inputSwitch name="NAV" name="sort" [(ngModel)]="newFundFamilyObj.AllowSort"></p-inputSwitch>
+                  </div>
+                </div>
+
+                <div class=" border-bottom mx-n3"></div>
+                <div class="mt-2 col-12 pl-0">
+                  <label class="font-weight-bold xxs-text info-text">MIL Rate Reporting </label>
+                  <div class="form-group">
+                    <label class="font-weight-bold xxs-text">Weekend Type? </label>
+                    <select class="form-control" name="WeekendType" [(ngModel)]="newFundFamilyObj.WeekendType">
+                      <option value="">-- Select --</option>
+                      <option *ngFor="let item of dropdownList.weekendTypeList" [value]="item.Value">
+                        {{item.DisplayText}}</option>
+                    </select>
+                  </div>
+                </div>
+                <div class=" border-bottom mx-n3"></div>
+
+                <div class="mt-2">
+                  <label class="font-weight-bold xxs-text info-text">Offset Setting </label>
+                  <div class="row">
+                    <div class="col-6 form-group">
+                      <label class="font-weight-bold xxs-text">NAV Offset </label>
+                      <select class="form-control" name="NavOffset" [(ngModel)]="newFundFamilyObj.NavOffset">
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.milRateOffsetTypeList" [value]="item.Value">
+                          {{item.DisplayText}}</option>
+                      </select>
+                    </div>
+
+                    <div class="col-6 form-group">
+                      <label class="font-weight-bold xxs-text">MIL Rate Offset </label>
+                      <select class="form-control" name="MilRateOffset" [(ngModel)]="newFundFamilyObj.MilRateOffset">
+                        <option value="">-- Select --</option>
+                        <option *ngFor="let item of dropdownList.navOffsetTypeList" [value]="item.Value">
+                          {{item.DisplayText}}</option>
+                      </select>
+                    </div>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+
+            <div class="col-6 pl-0">
+              <div class="bg-white rounded py-2 px-3">
+                <label class="font-weight-bold xxs-text">NAV Rate Offset </label>
+
+                <div class="row form-group">
+                  <div class="col-5 pr-0">
+                      <label class="font-weight-bold xxs-text">Unlinked Call Date Omnibus Type </label>
+                    <p-listbox [styleClass]="'w-100 border-0'" name="unlink-share-class" 
+                      [options]="dropdownList.shareClassList" [(ngModel)]="dropdownList.selectedOmnibusList" 
+                      multiple="multiple" checkbox="checkbox" filter="filter" optionLabel="DisplayText">
+                    </p-listbox>
+
+                    <!-- <label class="font-weight-bold xxs-text">Unlinked Call Date Omnibus Type </label>
+                    <input type="search" class="p-1 xs-text w-100 border-0 pl-2" placeholder="Search"
+                      name="searchUnlinkRec" [(ngModel)]="dropdownList.searchUnlinkRecords" />  
+                    <div class="list-box border overflow-x-hidden overflow-y-auto xxxl-h"> 
+                      <div class="xs-text p-1 list-group-item-action light-bg" 
+                        *ngFor="let item of dropdownList.shareClassList | searchFilter : dropdownList.searchUnlinkRecords; trackBy : trackFn; let i = index;" 
+                          (click)="selectingOmnibusType('unlink-to-link', item, i)" >{{item.DisplayText}}</div>                                                   
+                    </div> -->
+
+                  </div>
+                  <div class="col-2 text-center pt-5 mt-5">
+                    <button class="btn btn-light " [disabled]="!dropdownList.selectedOmnibusList.length" 
+                      (click)="link_unlink_OmnibusRecords('unlink-to-link')" >
+                      <!-- <i class="material-icons text-success">link</i> -->
+                      <img src="assets/images/icons/icon_link.png">
+                    </button>
+                    <button class="btn btn-light mt-4" [disabled]="!dropdownList.deselectOmnibusList.length"
+                      (click)="link_unlink_OmnibusRecords('link-to-unlink')">
+                      <!-- <i class="material-icons text-danger" >link</i> -->
+                      <img src="assets/images/icons/icon_unlink.png">
+                    </button>
+                  </div>
+                  <div class="col-5 pl-0">
+                    <label class="font-weight-bold xxs-text">Linked Call Date Omnibus Type </label>
+                    <!-- <input type="search" class="p-1 xs-text w-100 border-0 pl-2" placeholder="Search"
+                      name="searchLinkRecords" [(ngModel)]="dropdownList.searchLinkRecords" />
+                    <div class="list-box border overflow-x-hidden overflow-y-auto xxxl-h" >
+                      <div class="xs-text p-1 list-group-item-action" 
+                        *ngFor="let sItem of newFundFamilyObj.NewLinkedSharedClassList | searchFilter : dropdownList.searchUnlinkRecords; let indx = index;"
+                        (click)="selectingOmnibusType('link-to-unlink', sItem, indx)">
+                        {{sItem.DisplayText}}
+                      </div>
+                    </div> -->
+                    <p-listbox [styleClass]="'w-100 border-0'" name="unlink-share-class" 
+                      [options]="newFundFamilyObj.NewLinkedSharedClassList" [(ngModel)]="dropdownList.deselectOmnibusList" 
+                      multiple="multiple" checkbox="checkbox" filter="filter" optionLabel="DisplayText">
+                    </p-listbox>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="pb-3 px-3 d-flex ">
+        <div class="px-3 py-1">
+          <span class="text-danger">*</span>
+          <label class="xxs-text"><span class="text-danger">*</span> Fields marked with <span
+              class="text-danger">*</span> are mandatory</label>
+        </div>
+        <div class="ml-auto">
+          <button *ngIf="popup.fundTyp === 'add'" class="btn btn-sm secondary-bg text-white xl-w mr-3 text-uppercase"
+            (click)="this.fundFamilyForm.reset()">Reset</button>
+          <button *ngIf="popup.fundTyp === 'add'" type="button"
+            class="btn btn-sm primary-bg text-white xl-w text-uppercase" (click)="PerformAction('Add')"
+            [disabled]="fundFamilyForm.invalid || loadingInfo">Add</button>
+
+          <button *ngIf="popup.fundTyp === 'edit'" type="button"
+            class="btn btn-sm danger-bg text-white xl-w mr-3 text-uppercase"
+            (click)="PerformAction('Delete')">Delete</button>
+          <button *ngIf="popup.fundTyp === 'edit'" type="button"
+            class="btn btn-sm primary-bg text-white xl-w text-uppercase" (click)="PerformAction('Update')"
+            [disabled]="fundFamilyForm.invalid || loadingInfo || !fundFamilyForm.controls['Name']">Save</button>
+
+          <!-- Loading icons -->
+          <span *ngIf="loadingInfo" class="fa fa-circle-o-notch fa-spin float-right mt-3 px-4"></span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

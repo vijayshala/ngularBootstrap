@@ -1,0 +1,138 @@
+<div class="row pt-3">
+  <div class="col-6">
+    <div class="row">
+      <div class="col-2 pt-2">
+        <label class="secondary-text md-text">Distributions</label>
+      </div>
+      <div class="col-5">
+        <div class="row">
+          <div class="col-4 pt-2">
+            <label class="xxs-text secondary-text font-weight-bold">Fund Family</label>
+          </div>
+          <div class="col-8 pl-0">
+            <select class="form-control rounded-0">
+              <option>AAM</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="col-5">
+        <div class="position-relative">
+          <input type="search" class="form-control rounded-0 pr-4" placeholder="Search" />
+          <i class="material-icons position-absolute top-0 right-0 pr-1 pt-2 text-muted pt-1 cursor-pointer">search</i>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-6 text-right">
+    <button type="button" class="btn btn-sm primary-bg text-white text-uppercase lg-w mr-2">Initial</button>
+    <button type="button" class="btn btn-sm secondary-bg text-white text-uppercase lg-w mr-2">Verify</button>
+    <button type="button" class="btn btn-sm secondary-bg text-white text-uppercase lg-w mr-2"
+      (click)="defaultPopups.defaultPP = true">Defaults</button>
+    <button type="button" class="btn btn-sm light-bg text-white text-uppercase lg-w mr-2"
+      (click)="distCustomerViewPop.distCustomerView = true">Clear Cell</button>
+    <button type="button" class="btn btn-sm light-bg text-white text-uppercase lg-w mr-2">Clear Row</button>
+    <button type="button" class="btn"><img class="cursor-pointer" src="assets/images/icons/icon_filter.png"
+        width="19px"></button>
+  </div>
+</div>
+
+<!-- Default Modal -->
+<div class="modal overflow-auto" id="defaultModal" *ngIf="defaultPopups.defaultPP"
+  [ngClass]="{'show modal-active': defaultPopups.defaultPP }">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content border-0 light-bg">
+
+      <!-- Modal Header -->
+      <div class="modal-header pb-0 border-0">
+        <h5 class="modal-title white-text secondary-text">Default</h5>
+        <button type="button" class="btn px-0" (click)="popupClose()">
+          <i class="material-icons xs-text font-weight-bold secondary-text">close</i>
+        </button>
+      </div>
+
+      <!-- Modal body -->
+      <div class="modal-body">
+        <form class="bg-white rounded px-3 py-2">
+          <div class="row">
+            <div class="col-6">
+              <label class="secondary-text xxs-text font-weight-bold">Record Date</label>
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-6">
+              <label class="secondary-text xxs-text font-weight-bold">Payable Date</label>
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-6">
+              <label class="secondary-text xxs-text font-weight-bold">Ex Date</label>
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-6">
+              <label class="secondary-text xxs-text font-weight-bold">Reinvest Date</label>
+              <input type="text" class="form-control">
+            </div>
+            <div class="col-6">
+              <label class="secondary-text xxs-text font-weight-bold">MT Percent</label>
+              <input type="text" class="form-control">
+            </div>
+          </div>
+          <div class="row justify-content-end mt-4 mb-2 mx-0">
+            <button type="button"
+              class="btn btn-sm secondary-bg text-white float-right xl-w text-uppercase mr-3">Reset</button>
+            <button type="button" class="btn btn-sm primary-bg text-white float-right xl-w text-uppercase">Save</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- customer Modal -->
+<div class="modal overflow-auto" id="distCustomerViewModal" *ngIf="distCustomerViewPop.distCustomerView"
+  [ngClass]="{'show modal-active': distCustomerViewPop.distCustomerView }">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content border-0 light-bg">
+
+      <div class="modal-header pb-0 border-0">
+        <h5 class="modal-title secondary-text">Customers</h5>
+        <button type="button" class="btn px-0" (click)="customerViewOpen('close')">
+          <i class="material-icons xs-text font-weight-bold secondary-text">close</i>
+        </button>
+      </div>
+
+      <div class="modal-body pb-0">
+        <div class="row bg-light px-3 py-3">
+          <div class="col-7 px-0">
+            <h5 class="secondary-text">Bahl & Gaynor Income Growth A</h5>
+          </div>
+          <div class="col-5 px-0 position-relative">
+            <input class="form-control form-control-sm ml-auto pr-4 rounded-0 xxxxl-w"
+              placeholder="Search Customer Name or ID" type="search">
+            <i class="material-icons position-absolute pr-1 pt-1 right-0 text-muted top-0">search</i></div>
+        </div>
+        <div class="row">
+          <p-table class="dataListTable" [value]="customerList" [paginator]="true" [rows]="10" #dt [responsive]="true">
+            <ng-template pTemplate="header">
+              <tr>
+                <th class="light-bg border-0 font-weight-normal" [hidden]="!col.visible"
+                  *ngFor="let col of customerTableFields">
+                  {{col.header}} </th>
+                <th class="xs-w light-bg border-0 text-center"></th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-singleRow let-fcont>
+              <tr>
+                <td [hidden]="!field.visible" *ngFor="let field of customerTableFields" class="text-break">
+                  {{singleRow[field.data] ? singleRow[field.data] : '--'}}
+                </td>
+                <td class="text-center">
+                  <span><i class="material-icons cursor-pointer secondary-text">launch</i> </span>
+                </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
